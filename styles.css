@@ -101,7 +101,7 @@ body {
 .scene__tagline {
   align-self: start;
   margin: clamp(1rem, 2.5vw, 2.4rem) 0 0;
-  font-family: "Brush Script MT", "Segoe Script", "Snell Roundhand", cursive;
+  font-family: "Beth Ellen", "Brush Script MT", "Segoe Script", "Snell Roundhand", cursive;
   font-size: clamp(3rem, 12vw, 9rem);
   line-height: 0.8;
   letter-spacing: 0.01em;
