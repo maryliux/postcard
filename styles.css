@@ -11,49 +11,23 @@ body {
   min-height: 100vh;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #2f2f2f;
-  background-color: #f4f4f4;
-  background-image: url("background.png"), url("background.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.24));
-  pointer-events: none;
+  background: #ffffff;
 }
 
 .scene {
-  position: relative;
   min-height: 100vh;
-  padding: clamp(1.5rem, 3vw, 2.75rem);
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  align-items: center;
-  justify-items: center;
-}
-
-.scene__meta {
-  width: min(76rem, 100%);
+  padding: clamp(1rem, 3vw, 2rem);
   display: flex;
-  justify-content: space-between;
-  align-self: start;
-  text-transform: uppercase;
-  letter-spacing: 0.26em;
-  font-size: clamp(0.56rem, 0.7vw, 0.72rem);
-  color: rgba(0, 0, 0, 0.6);
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+  align-items: center;
+  justify-content: center;
 }
 
 .postcard-wrap {
   position: relative;
-  width: min(82vw, 34rem);
-  perspective: 2200px;
-  transform: rotate(-4deg);
-  filter: drop-shadow(0 24px 24px rgba(0, 0, 0, 0.18));
+  width: min(88vw, 44rem);
+  perspective: 2600px;
+  transform: rotate(-5deg);
+  filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.24));
 }
 
 .clip {
@@ -76,6 +50,7 @@ body::before {
   background: transparent;
   cursor: grab;
   touch-action: none;
+  transform-style: preserve-3d;
 }
 
 .postcard:focus-visible {
@@ -92,7 +67,7 @@ body::before {
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 480ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 460ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .postcard__face {
@@ -120,36 +95,8 @@ body::before {
   transform: rotateY(180deg);
 }
 
-.scene__hint {
-  margin: 0;
-  align-self: end;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  color: rgba(0, 0, 0, 0.55);
-}
-
-.scene__signature {
-  margin: 1rem 0 0;
-  letter-spacing: 0.14em;
-  font-size: 0.82rem;
-  justify-self: end;
-  color: rgba(0, 0, 0, 0.48);
-}
-
 @media (max-width: 640px) {
   .scene {
-    padding: 1.15rem;
-    grid-template-rows: auto 1fr auto;
-    gap: 1.2rem;
-  }
-
-  .scene__meta {
-    letter-spacing: 0.15em;
-    font-size: 0.56rem;
-  }
-
-  .scene__signature {
-    display: none;
+    padding: 0.85rem;
   }
 }
