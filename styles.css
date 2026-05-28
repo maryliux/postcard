@@ -47,7 +47,7 @@ body {
 }
 
 .scene__cta {
-  margin: 0;
+  margin: clamp(0.45rem, 1.2vw, 0.95rem) 0 0;
   font-family: "Courier New", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
   font-size: 10px;
   letter-spacing: 0.12em;
@@ -158,6 +158,7 @@ body {
   }
 
   .scene__cta {
+    margin-top: 0.6rem;
     letter-spacing: 0.09em;
   }
 
