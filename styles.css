@@ -30,7 +30,7 @@ body {
   margin: 0 0 clamp(0.8rem, 2.3vw, 2rem);
   max-width: min(62ch, 86vw);
   font-family: "Courier New", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
-  font-size: clamp(0.64rem, 1vw, 0.98rem);
+  font-size: 10px;
   line-height: 1.2;
   letter-spacing: 0.04em;
   color: #181818;
