@@ -18,15 +18,28 @@ body {
   min-height: 100vh;
   padding: clamp(1rem, 3vw, 2rem);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: clamp(1rem, 2.2vw, 1.8rem);
+  text-align: center;
+}
+
+.scene__quote {
+  margin: 0;
+  max-width: min(70rem, 92vw);
+  font-family: "Didot", "Bodoni MT", "Times New Roman", serif;
+  font-size: clamp(1rem, 1.7vw, 1.5rem);
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: #111111;
 }
 
 .postcard-wrap {
   position: relative;
-  width: min(88vw, 44rem);
+  width: clamp(14rem, 45vw, 28rem);
   perspective: 2600px;
-  transform: rotate(-5deg);
+  transform: none;
   filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.24));
 }
 
@@ -83,8 +96,22 @@ body {
   transform: rotateY(180deg);
 }
 
+.scene__tagline {
+  margin: 0;
+  font-family: "Britannic Bold", "Britannia", "Copperplate", serif;
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+  letter-spacing: 0.08em;
+  color: #111111;
+  text-transform: lowercase;
+}
+
 @media (max-width: 640px) {
   .scene {
     padding: 0.85rem;
+  }
+
+  .scene__quote {
+    max-width: 95vw;
+    line-height: 1.35;
   }
 }
