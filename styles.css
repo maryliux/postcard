@@ -103,6 +103,68 @@ body {
   pointer-events: none;
 }
 
+.postcard__doodles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: rgba(22, 22, 22, 0.92);
+}
+
+.doodle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.doodle__line {
+  display: inline-block;
+  width: clamp(1.2rem, 3.5vw, 2.6rem);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.88;
+  transform-origin: left center;
+}
+
+.doodle__text {
+  font-family: "Beth Ellen", "Brush Script MT", "Segoe Script", cursive;
+  font-size: clamp(0.5rem, 1vw, 0.72rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.doodle--1 {
+  top: 19%;
+  left: 9%;
+  transform: rotate(-11deg);
+}
+
+.doodle--1 .doodle__line {
+  transform: rotate(-18deg);
+}
+
+.doodle--2 {
+  right: 4%;
+  bottom: 23%;
+  transform: rotate(7deg);
+}
+
+.doodle--2 .doodle__line {
+  width: clamp(1.35rem, 4vw, 2.9rem);
+  transform: rotate(17deg);
+}
+
+.doodle--3 {
+  right: 11%;
+  top: 9%;
+  transform: rotate(-2deg);
+}
+
+.doodle--3 .doodle__line {
+  width: clamp(1rem, 3vw, 2.2rem);
+  transform: rotate(26deg);
+}
+
 .postcard__face--back {
   transform: rotateY(180deg);
 }
@@ -179,5 +241,9 @@ body {
   .scene__fate-button {
     font-size: 0.58rem;
     padding: 0.5rem 0.8rem;
+  }
+
+  .doodle__text {
+    font-size: 0.48rem;
   }
 }
