@@ -30,18 +30,6 @@ body {
   filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.24));
 }
 
-.clip {
-  position: absolute;
-  top: clamp(-1.1rem, -1vw, -0.7rem);
-  left: 18%;
-  width: clamp(2.5rem, 6.5vw, 3.8rem);
-  height: clamp(0.9rem, 2.6vw, 1.25rem);
-  border-radius: 0.14rem;
-  background: #222;
-  z-index: 3;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-}
-
 .postcard {
   border: 0;
   padding: 0;
