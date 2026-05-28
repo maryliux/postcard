@@ -107,66 +107,103 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  color: rgba(22, 22, 22, 0.92);
+  color: #b22a35;
 }
 
 .doodle {
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.38rem;
 }
 
 .doodle__line {
+  position: relative;
   display: inline-block;
-  width: clamp(1.2rem, 3.5vw, 2.6rem);
-  height: 1px;
-  background: currentColor;
-  opacity: 0.88;
+  width: clamp(1.8rem, 4.6vw, 3.4rem);
+  height: 0.78rem;
+  flex: 0 0 auto;
+}
+
+.doodle__line::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.1rem;
+  right: 0.34rem;
+  border-top: 2px solid currentColor;
+  border-radius: 999px;
+  transform: translateY(-50%) rotate(-5deg);
   transform-origin: left center;
+}
+
+.doodle__line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.doodle__line--left::before {
+  left: 0.34rem;
+  right: 0.1rem;
+  transform: translateY(-50%) rotate(5deg);
+}
+
+.doodle__line--left::after {
+  left: 0;
+  right: auto;
+  border-top: 0;
+  border-right: 0;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
 }
 
 .doodle__text {
   font-family: "Beth Ellen", "Brush Script MT", "Segoe Script", cursive;
-  font-size: clamp(0.5rem, 1vw, 0.72rem);
+  font-size: clamp(0.58rem, 1.18vw, 0.86rem);
   line-height: 1;
   white-space: nowrap;
-}
-
-.doodle--1 {
-  top: 19%;
-  left: 9%;
-  transform: rotate(-11deg);
-}
-
-.doodle--1 .doodle__line {
-  transform: rotate(-18deg);
-}
-
-.doodle--2 {
-  right: 4%;
-  bottom: 23%;
-  transform: rotate(7deg);
-}
-
-.doodle--2 .doodle__line {
-  width: clamp(1.35rem, 4vw, 2.9rem);
-  transform: rotate(17deg);
+  letter-spacing: 0.01em;
 }
 
 .doodle--3 {
-  right: 11%;
-  top: 9%;
-  transform: rotate(-2deg);
+  top: -9%;
+  right: -36%;
+  transform: rotate(-4deg);
 }
 
-.doodle--3 .doodle__line {
-  width: clamp(1rem, 3vw, 2.2rem);
-  transform: rotate(26deg);
+.doodle--1 {
+  top: 8%;
+  right: -29%;
+  transform: rotate(-10deg);
+}
+
+.doodle--2 {
+  left: -44%;
+  bottom: 19%;
+  transform: rotate(10deg);
+}
+
+.doodle--2 .doodle__text {
+  max-width: 9rem;
+  white-space: normal;
+  line-height: 1.02;
+  text-align: left;
 }
 
 .postcard__face--back {
   transform: rotateY(180deg);
+}
+
+.postcard__face--front {
+  overflow: visible;
 }
 
 .scene__bottom {
@@ -246,6 +283,20 @@ body {
   }
 
   .doodle__text {
-    font-size: 0.48rem;
+    font-size: 0.5rem;
+  }
+
+  .doodle--1 {
+    right: -24%;
+  }
+
+  .doodle--2 {
+    left: -35%;
+    bottom: 22%;
+  }
+
+  .doodle--3 {
+    right: -28%;
+    top: -6%;
   }
 }
