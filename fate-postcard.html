@@ -38,7 +38,15 @@
       <aside class="creator__sticker-sheet creator__sticker-sheet--right" aria-hidden="true">
         <p class="creator__sheet-title">sticker sheet</p>
         <div class="creator__sheet-grid">
-          <span class="creator__sticker">❀</span>
+          <span
+            class="creator__sticker creator__sticker--custom-image"
+            data-sticker-image-src="custom-sticker.png"
+            data-sticker-fallback="★"
+            aria-label="custom sticker"
+          >
+            <img class="creator__sticker-image" src="custom-sticker.png" alt="" draggable="false" />
+            <span class="creator__sticker-fallback">★</span>
+          </span>
           <span class="creator__sticker">☀</span>
           <span class="creator__sticker">♣</span>
           <span class="creator__sticker">❥</span>
@@ -72,10 +80,10 @@
           </button>
         </div>
         <section class="creator__actions" data-actions-bar hidden>
-          <button class="creator__mode-button creator__action-button" data-action="undo" type="button">
+          <button class="creator__action-button" data-action="undo" type="button">
             undo
           </button>
-          <button class="creator__mode-button creator__action-button" data-action="save" type="button">
+          <button class="creator__action-button creator__action-button--save" data-action="save" type="button">
             save
           </button>
         </section>
@@ -95,10 +103,10 @@
           <img src="backcard.png" alt="Postcard back" />
         </figure>
         <section class="creator__actions" data-actions-bar hidden>
-          <button class="creator__mode-button creator__action-button" data-action="undo" type="button">
+          <button class="creator__action-button" data-action="undo" type="button">
             undo
           </button>
-          <button class="creator__mode-button creator__action-button" data-action="save" type="button">
+          <button class="creator__action-button creator__action-button--save" data-action="save" type="button">
             save
           </button>
         </section>

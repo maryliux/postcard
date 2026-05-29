@@ -163,6 +163,7 @@ body.is-decorate-open .creator__sticker-sheet--right {
 .creator__sticker {
   display: grid;
   place-items: center;
+  position: relative;
   height: clamp(1.2rem, 2.1vw, 1.55rem);
   border-radius: 0.36rem;
   border: 1px solid rgba(25, 25, 25, 0.13);
@@ -170,6 +171,30 @@ body.is-decorate-open .creator__sticker-sheet--right {
   font-size: clamp(0.74rem, 1.2vw, 0.94rem);
   cursor: grab;
   touch-action: none;
+  overflow: hidden;
+}
+
+.creator__sticker-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.creator__sticker-fallback {
+  display: none;
+  pointer-events: none;
+}
+
+.creator__sticker.is-image-missing .creator__sticker-image {
+  display: none;
+}
+
+.creator__sticker.is-image-missing .creator__sticker-fallback {
+  display: inline;
 }
 
 .creator__postcard-wrap {
@@ -279,6 +304,14 @@ body.is-decorate-open .creator__sticker-sheet--right {
   pointer-events: none;
 }
 
+.creator__placed-sticker-image {
+  width: clamp(0.92rem, 1.9vw, 1.36rem);
+  height: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 .creator__drag-ghost {
   position: fixed;
   left: 0;
@@ -291,8 +324,14 @@ body.is-decorate-open .creator__sticker-sheet--right {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.22));
 }
 
+.creator__drag-ghost-image {
+  width: clamp(1rem, 2.1vw, 1.42rem);
+  height: auto;
+  display: block;
+}
+
 .creator__actions {
-  margin-top: clamp(0.72rem, 1.8vw, 1.15rem);
+  margin-top: clamp(1.65rem, 4.8vw, 3.2rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -304,11 +343,43 @@ body.is-decorate-open .creator__sticker-sheet--right {
 }
 
 .creator__action-button {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.5rem 0.92rem;
-  background: transparent;
-  box-shadow: none;
+  border: 1px solid rgba(25, 25, 25, 0.2);
+  background: rgba(255, 255, 255, 0.4);
+  color: #1a1a1a;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.6rem, 0.9vw, 0.74rem);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  border-radius: 0.62rem;
+  padding: 0.56rem 0.96rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease,
+    box-shadow 170ms ease;
+}
+
+.creator__action-button:hover {
+  background: rgba(255, 255, 255, 0.56);
+  border-color: rgba(25, 25, 25, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.creator__action-button:focus-visible {
+  outline: 2px solid #131313;
+  outline-offset: 2px;
+}
+
+.creator__action-button--save {
+  background: linear-gradient(135deg, rgba(252, 209, 232, 0.86), rgba(245, 172, 210, 0.84));
+  border-color: rgba(179, 69, 128, 0.32);
+  color: #5f1f46;
+}
+
+.creator__action-button--save:hover {
+  background: linear-gradient(135deg, rgba(255, 221, 239, 0.92), rgba(250, 188, 223, 0.9));
+  border-color: rgba(179, 69, 128, 0.48);
+  box-shadow: 0 2px 5px rgba(148, 52, 104, 0.2);
 }
 
 .creator__fortune-line {
@@ -428,6 +499,11 @@ body.is-decorate-open .creator__sticker-sheet--right {
     font-size: 0.64rem;
   }
 
+  .creator__placed-sticker-image,
+  .creator__drag-ghost-image {
+    width: 0.96rem;
+  }
+
   .creator__placed-sticker {
     font-size: 0.72rem;
   }
@@ -438,7 +514,12 @@ body.is-decorate-open .creator__sticker-sheet--right {
 
   .creator__actions {
     gap: 0.4rem;
-    margin-top: 0.72rem;
+    margin-top: 1.35rem;
+  }
+
+  .creator__action-button {
+    font-size: 0.58rem;
+    padding: 0.5rem 0.8rem;
   }
 
   .creator__postcard-wrap,

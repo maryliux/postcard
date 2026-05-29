@@ -69,6 +69,15 @@ let stickerPlacements = [];
 let stickerIdCounter = 0;
 let stickerDragState = null;
 
+function loadImageAsync(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
@@ -122,7 +131,15 @@ function renderPlacedStickers() {
     stickerPlacements.forEach((placement) => {
       const node = document.createElement("span");
       node.className = "creator__placed-sticker";
-      node.textContent = placement.symbol;
+      if (placement.type === "image" && placement.imageSrc) {
+        const imageNode = document.createElement("img");
+        imageNode.className = "creator__placed-sticker-image";
+        imageNode.src = placement.imageSrc;
+        imageNode.alt = "";
+        node.appendChild(imageNode);
+      } else {
+        node.textContent = placement.symbol;
+      }
       node.style.left = `${(placement.x * 100).toFixed(2)}%`;
       node.style.top = `${(placement.y * 100).toFixed(2)}%`;
       node.style.transform = `translate(-50%, -50%) rotate(${placement.rotation.toFixed(1)}deg) scale(${placement.scale.toFixed(2)})`;
@@ -384,6 +401,23 @@ function updateDragGhostPosition(clientX, clientY) {
   stickerDragState.ghost.style.top = `${clientY}px`;
 }
 
+function createDragGhost(stickerPayload) {
+  const ghost = document.createElement("span");
+  ghost.className = "creator__drag-ghost";
+
+  if (stickerPayload.type === "image" && stickerPayload.imageSrc) {
+    const imageNode = document.createElement("img");
+    imageNode.className = "creator__drag-ghost-image";
+    imageNode.src = stickerPayload.imageSrc;
+    imageNode.alt = "";
+    ghost.appendChild(imageNode);
+  } else {
+    ghost.textContent = stickerPayload.symbol;
+  }
+
+  return ghost;
+}
+
 function stopStickerDrag() {
   if (!stickerDragState) {
     return;
@@ -399,7 +433,7 @@ function stopStickerDrag() {
   stickerDragState = null;
 }
 
-function tryPlaceStickerAtPoint(symbol, clientX, clientY) {
+function tryPlaceStickerAtPoint(stickerPayload, clientX, clientY) {
   const dropTarget = getActiveFrontDropTarget();
   if (!dropTarget) {
     return false;
@@ -414,7 +448,9 @@ function tryPlaceStickerAtPoint(symbol, clientX, clientY) {
   const y = clamp((clientY - rect.top) / rect.height, 0.02, 0.98);
   stickerPlacements.push({
     id: stickerIdCounter++,
-    symbol,
+    type: stickerPayload.type,
+    symbol: stickerPayload.symbol,
+    imageSrc: stickerPayload.imageSrc || null,
     x,
     y,
     rotation: randomInRange(-17, 17),
@@ -437,7 +473,7 @@ function onGlobalStickerPointerUp(event) {
     return;
   }
 
-  tryPlaceStickerAtPoint(stickerDragState.symbol, event.clientX, event.clientY);
+  tryPlaceStickerAtPoint(stickerDragState, event.clientX, event.clientY);
   stopStickerDrag();
 }
 
@@ -447,21 +483,27 @@ function onSheetStickerPointerDown(event) {
   }
 
   const stickerNode = event.currentTarget;
-  const symbol = stickerNode.textContent ? stickerNode.textContent.trim() : "";
-  if (!symbol) {
+  const imageSrc = stickerNode.dataset.stickerImageSrc || "";
+  const fallbackSymbol = stickerNode.dataset.stickerFallback || (stickerNode.textContent ? stickerNode.textContent.trim() : "");
+  const useImage = Boolean(imageSrc && !stickerNode.classList.contains("is-image-missing"));
+  const stickerPayload = {
+    type: useImage ? "image" : "emoji",
+    symbol: fallbackSymbol || "★",
+    imageSrc: useImage ? imageSrc : null,
+  };
+
+  if (!stickerPayload.symbol && !stickerPayload.imageSrc) {
     return;
   }
 
   event.preventDefault();
   stopStickerDrag();
 
-  const ghost = document.createElement("span");
-  ghost.className = "creator__drag-ghost";
-  ghost.textContent = symbol;
+  const ghost = createDragGhost(stickerPayload);
   document.body.appendChild(ghost);
 
   stickerDragState = {
-    symbol,
+    ...stickerPayload,
     pointerId: event.pointerId,
     ghost,
   };
@@ -482,7 +524,7 @@ function onUndoStickersClick() {
   setActionsVisible(stickerPlacements.length > 0);
 }
 
-function onSaveStickersClick() {
+async function onSaveStickersClick() {
   if (stickerPlacements.length === 0) {
     return;
   }
@@ -492,8 +534,8 @@ function onSaveStickersClick() {
     return;
   }
 
-  const image = new Image();
-  image.onload = () => {
+  try {
+    const image = await loadImageAsync(sourceImageSrc);
     const canvas = document.createElement("canvas");
     canvas.width = image.naturalWidth || 1200;
     canvas.height = image.naturalHeight || 800;
@@ -508,12 +550,34 @@ function onSaveStickersClick() {
     context.textAlign = "center";
     context.textBaseline = "middle";
 
+    const imageStickerPlacements = stickerPlacements.filter(
+      (placement) => placement.type === "image" && placement.imageSrc
+    );
+    const uniqueImageSources = [...new Set(imageStickerPlacements.map((placement) => placement.imageSrc))];
+    const loadedStickerImages = new Map();
+    await Promise.all(
+      uniqueImageSources.map(async (src) => {
+        try {
+          const stickerImage = await loadImageAsync(src);
+          loadedStickerImages.set(src, stickerImage);
+        } catch (error) {
+          // Keep emoji fallback behavior for failed image loads.
+        }
+      })
+    );
+
     stickerPlacements.forEach((placement) => {
       context.save();
       context.translate(placement.x * canvas.width, placement.y * canvas.height);
       context.rotate((placement.rotation * Math.PI) / 180);
       context.scale(placement.scale, placement.scale);
-      context.fillText(placement.symbol, 0, 0);
+      if (placement.type === "image" && placement.imageSrc && loadedStickerImages.has(placement.imageSrc)) {
+        const stickerImage = loadedStickerImages.get(placement.imageSrc);
+        const baseSize = Math.max(26, Math.round(canvas.width * 0.04));
+        context.drawImage(stickerImage, -baseSize / 2, -baseSize / 2, baseSize, baseSize);
+      } else {
+        context.fillText(placement.symbol, 0, 0);
+      }
       context.restore();
     });
 
@@ -521,12 +585,9 @@ function onSaveStickersClick() {
     downloadLink.href = canvas.toDataURL("image/png");
     downloadLink.download = "decorated-postcard.png";
     downloadLink.click();
-  };
-
-  image.onerror = () => {
+  } catch (error) {
     window.alert("Could not save this postcard image. Please try again.");
-  };
-  image.src = sourceImageSrc;
+  }
 }
 
 if (creatorPostcard) {
@@ -547,6 +608,15 @@ if (decorateToggleButton) {
 }
 
 sheetStickers.forEach((stickerNode) => {
+  const previewImage = stickerNode.querySelector(".creator__sticker-image");
+  if (previewImage) {
+    previewImage.addEventListener("error", () => {
+      stickerNode.classList.add("is-image-missing");
+    });
+    previewImage.addEventListener("load", () => {
+      stickerNode.classList.remove("is-image-missing");
+    });
+  }
   stickerNode.addEventListener("pointerdown", onSheetStickerPointerDown);
 });
 
