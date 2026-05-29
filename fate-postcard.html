@@ -10,26 +10,49 @@
     <link rel="stylesheet" href="fate-postcard.css" />
   </head>
   <body>
-    <a class="creator__back" href="index.html" aria-label="Back to landing page">←</a>
-
     <main class="creator">
-      <button
-        class="creator__postcard"
-        id="creatorPostcard"
-        type="button"
-        aria-label="Upload your own postcard image"
-      >
-        <img id="creatorImage" src="frontcard.png" alt="Your postcard image" draggable="false" />
-        <span class="creator__upload-dot" aria-hidden="true">+</span>
-        <span class="creator__fortune" id="creatorFortune"></span>
-      </button>
+      <div class="creator__top-bar">
+        <a class="creator__back-button" href="index.html" aria-label="Back to landing page">← back</a>
+        <div class="creator__view-toggle" role="group" aria-label="Card display mode">
+          <button class="creator__mode-button is-active" id="mode3dButton" type="button">3d card</button>
+          <button class="creator__mode-button" id="mode2dButton" type="button">2d card</button>
+        </div>
+      </div>
 
-      <input
-        id="creatorUploadInput"
-        type="file"
-        accept=".png,.jpg,.jpeg,.heic,.heif,image/png,image/jpeg,image/heic,image/heif"
-        hidden
-      />
+      <section class="creator__view creator__view--3d" id="creatorView3d">
+        <div class="creator__postcard-wrap">
+          <button
+            class="creator__postcard"
+            id="creatorPostcard"
+            type="button"
+            aria-label="Interactive postcard. Drag in any direction or click to flip."
+          >
+            <div class="creator__postcard-inner" id="creatorPostcardInner">
+              <figure class="creator__face creator__face--front">
+                <img id="creatorFrontImage3d" src="frontcard.png" alt="Your uploaded postcard front" />
+              </figure>
+              <figure class="creator__face creator__face--back">
+                <img src="backcard.png" alt="Postcard back" />
+              </figure>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <section class="creator__view creator__view--2d" id="creatorView2d" hidden>
+        <figure class="creator__flat-card">
+          <img id="creatorFrontImage2d" src="frontcard.png" alt="Your uploaded postcard front" />
+        </figure>
+        <figure class="creator__flat-card">
+          <img src="backcard.png" alt="Postcard back" />
+        </figure>
+      </section>
+
+      <section class="creator__fortunes" aria-live="polite">
+        <p class="creator__fortune-line" id="fortuneLine1"></p>
+        <p class="creator__fortune-line" id="fortuneLine2"></p>
+        <p class="creator__fortune-line" id="fortuneLine3"></p>
+      </section>
     </main>
 
     <script src="fate-postcard.js"></script>

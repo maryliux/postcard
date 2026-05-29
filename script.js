@@ -4,6 +4,7 @@ const doodles = Array.from(document.querySelectorAll(".postcard__doodles .doodle
 const doodleLayer = document.querySelector(".postcard__doodles");
 const preloader = document.querySelector("#preloader");
 const sceneFateButton = document.querySelector("#sceneFateButton");
+const postcardUploadInput = document.querySelector("#postcardUploadInput");
 
 let isDragging = false;
 let moved = false;
@@ -44,6 +45,9 @@ const STOP_EPSILON = 0.03;
 const MAX_ANNOTATION_CHARS = 50;
 const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 260 : 1280;
+const UPLOAD_STORAGE_KEY = "uploadedPostcardFrontImage";
+const SUPPORTED_UPLOAD_TYPES = new Set(["image/png", "image/jpeg", "image/heic", "image/heif"]);
+const SUPPORTED_UPLOAD_EXTENSIONS = [".png", ".jpg", ".jpeg", ".heic", ".heif"];
 const FORTUNE_STYLE_ANNOTATIONS = [
   "your luck changes after the next full moon.",
   "someone from your past will text this week.",
@@ -418,8 +422,80 @@ function runPreloaderSequence() {
   window.setTimeout(finishPreloader, PRELOADER_DURATION_MS);
 }
 
+function isSupportedUploadFile(file) {
+  if (!file) {
+    return false;
+  }
+
+  const fileName = file.name ? file.name.toLowerCase() : "";
+  const hasSupportedExtension = SUPPORTED_UPLOAD_EXTENSIONS.some((extension) =>
+    fileName.endsWith(extension)
+  );
+  const mimeType = file.type ? file.type.toLowerCase() : "";
+  const hasSupportedMimeType = SUPPORTED_UPLOAD_TYPES.has(mimeType);
+
+  return hasSupportedExtension || hasSupportedMimeType;
+}
+
 function onFateButtonClick() {
-  window.location.href = "fate-postcard.html";
+  if (!postcardUploadInput) {
+    return;
+  }
+
+  postcardUploadInput.value = "";
+  postcardUploadInput.click();
+}
+
+function onUploadInputChange(event) {
+  const input = event.target;
+  const selectedFile = input.files && input.files[0];
+  if (!selectedFile) {
+    return;
+  }
+
+  if (!isSupportedUploadFile(selectedFile)) {
+    window.alert("Please upload a PNG, JPEG, or HEIC image.");
+    input.value = "";
+    return;
+  }
+
+  const testImageUrl = URL.createObjectURL(selectedFile);
+  const testImage = new Image();
+
+  testImage.onload = () => {
+    URL.revokeObjectURL(testImageUrl);
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const result = reader.result;
+      if (typeof result !== "string") {
+        window.alert("Could not process that image. Please try a different file.");
+        return;
+      }
+
+      try {
+        window.sessionStorage.setItem(UPLOAD_STORAGE_KEY, result);
+      } catch (error) {
+        window.alert("That image is too large. Please try a smaller photo.");
+        return;
+      }
+
+      window.location.href = "fate-postcard.html";
+    };
+
+    reader.onerror = () => {
+      window.alert("Could not read that file. Please try again.");
+    };
+
+    reader.readAsDataURL(selectedFile);
+  };
+
+  testImage.onerror = () => {
+    URL.revokeObjectURL(testImageUrl);
+    window.alert("That image format is not supported by this browser. Try PNG or JPEG.");
+  };
+
+  testImage.src = testImageUrl;
 }
 
 postcard.addEventListener("pointerdown", onPointerDown);
@@ -427,8 +503,9 @@ postcard.addEventListener("pointermove", onPointerMove);
 postcard.addEventListener("pointerup", onPointerUp);
 postcard.addEventListener("pointercancel", onPointerCancel);
 postcard.addEventListener("keydown", onKeyDown);
-if (sceneFateButton) {
+if (sceneFateButton && postcardUploadInput) {
   sceneFateButton.addEventListener("click", onFateButtonClick);
+  postcardUploadInput.addEventListener("change", onUploadInputChange);
 }
 window.addEventListener("resize", () => {
   window.clearTimeout(resizeDebounceId);
