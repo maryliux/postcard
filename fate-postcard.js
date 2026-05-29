@@ -703,25 +703,44 @@ function onSaveLayoutClick(event) {
 
 async function onSaveStickersClick() {
   const frontImageSrc = creatorFrontImage3d?.src || creatorFrontImage2d?.src;
+  const backImageSrc = "backcard.png";
   if (!frontImageSrc) {
     return;
   }
 
   try {
     const frontImage = await loadImageAsync(frontImageSrc);
+    const backImage = await loadImageAsync(backImageSrc);
 
     const frontWidth = frontImage.naturalWidth || 1200;
     const frontHeight = frontImage.naturalHeight || 800;
+    const backWidth = backImage.naturalWidth || frontWidth;
+    const backHeight = backImage.naturalHeight || Math.round((frontHeight / frontWidth) * backWidth);
+    const scaledBackHeight = Math.max(1, Math.round((frontWidth / backWidth) * backHeight));
+    const sidePadding = Math.round(frontWidth * 0.2);
+    const topPadding = Math.round(frontHeight * 0.17);
+    const bottomFrontPadding = Math.round(frontHeight * 0.18);
+    const sectionGap = Math.max(28, Math.round(frontHeight * 0.08));
+    const bottomPadding = Math.max(18, Math.round(frontHeight * 0.06));
+    const canvasWidth = frontWidth + sidePadding * 2;
+    const canvasHeight = topPadding + frontHeight + bottomFrontPadding + sectionGap + scaledBackHeight + bottomPadding;
+    const frontX = sidePadding;
+    const frontY = topPadding;
+    const backX = sidePadding;
+    const backY = topPadding + frontHeight + bottomFrontPadding + sectionGap;
 
     const canvas = document.createElement("canvas");
-    canvas.width = frontWidth;
-    canvas.height = frontHeight;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
     const context = canvas.getContext("2d");
     if (!context) {
       return;
     }
 
-    context.drawImage(frontImage, 0, 0, frontWidth, frontHeight);
+    context.fillStyle = "#f4f3ed";
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
+    context.drawImage(frontImage, frontX, frontY, frontWidth, frontHeight);
+    context.drawImage(backImage, backX, backY, frontWidth, scaledBackHeight);
 
     const stickerFontSizePx = Math.max(22, Math.round(frontWidth * 0.048));
     context.font = `${stickerFontSizePx}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
@@ -746,7 +765,7 @@ async function onSaveStickersClick() {
 
     stickerPlacements.forEach((placement) => {
       context.save();
-      context.translate(placement.x * frontWidth, placement.y * frontHeight);
+      context.translate(frontX + placement.x * frontWidth, frontY + placement.y * frontHeight);
       context.rotate((placement.rotation * Math.PI) / 180);
       context.scale(placement.scale, placement.scale);
       if (placement.type === "image" && placement.imageSrc && loadedStickerImages.has(placement.imageSrc)) {
@@ -759,9 +778,62 @@ async function onSaveStickersClick() {
       context.restore();
     });
 
+    const fortuneTexts = [1, 2, 3].map((slotNumber) => {
+      const fortuneElement =
+        creatorView2d?.querySelector(`[data-fortune-slot="${slotNumber}"]`) ||
+        document.querySelector(`[data-fortune-slot="${slotNumber}"]`);
+      return fortuneElement?.textContent?.trim() || "";
+    });
+    const fortuneFontSize = Math.max(26, Math.round(frontWidth * 0.017));
+    const lineHeight = fortuneFontSize * 1.06;
+    const maxFortuneWidth = frontWidth * 0.42;
+
+    const drawWrappedFortune = (text, x, y, rotationDeg) => {
+      if (!text) {
+        return;
+      }
+
+      const words = text.split(/\s+/).filter(Boolean);
+      if (words.length === 0) {
+        return;
+      }
+
+      context.save();
+      context.translate(x, y);
+      context.rotate((rotationDeg * Math.PI) / 180);
+      context.font = `${fortuneFontSize}px "Beth Ellen", "Marker Felt", "Bradley Hand", cursive`;
+      context.fillStyle = "#b22833";
+      context.textAlign = "left";
+      context.textBaseline = "top";
+
+      let line = "";
+      let lineIndex = 0;
+      words.forEach((word) => {
+        const candidate = line ? `${line} ${word}` : word;
+        if (context.measureText(candidate).width <= maxFortuneWidth || !line) {
+          line = candidate;
+          return;
+        }
+
+        context.fillText(line, 0, lineIndex * lineHeight);
+        line = word;
+        lineIndex += 1;
+      });
+
+      if (line) {
+        context.fillText(line, 0, lineIndex * lineHeight);
+      }
+
+      context.restore();
+    };
+
+    drawWrappedFortune(fortuneTexts[0], frontX + frontWidth * 0.76, frontY - frontHeight * 0.1, -7);
+    drawWrappedFortune(fortuneTexts[1], frontX - frontWidth * 0.2, frontY + frontHeight * 0.36, 5);
+    drawWrappedFortune(fortuneTexts[2], frontX + frontWidth * 0.77, frontY + frontHeight * 0.63, -4);
+
     const downloadLink = document.createElement("a");
     downloadLink.href = canvas.toDataURL("image/png");
-    downloadLink.download = "postcard-front.png";
+    downloadLink.download = "postcard-2d-view.png";
     downloadLink.click();
   } catch (error) {
     window.alert("Could not save this postcard image. Please try again.");
