@@ -175,41 +175,6 @@ body.is-ready .scene {
   z-index: 2;
 }
 
-.postcard__stickers {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.sticker {
-  position: absolute;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.16));
-}
-
-.sticker--top-left {
-  width: clamp(2rem, 7vw, 2.9rem);
-  top: 1.2%;
-  left: 1.6%;
-  transform: rotate(-8deg);
-}
-
-.sticker--top-center {
-  width: clamp(1.7rem, 6vw, 2.5rem);
-  top: -1.6%;
-  left: 50%;
-  transform: translateX(-50%) rotate(4deg);
-}
-
-.sticker--bottom-right {
-  width: clamp(2.2rem, 8vw, 3.25rem);
-  right: 1.1%;
-  bottom: 0.8%;
-  transform: rotate(7deg);
-}
-
 .doodle {
   position: absolute;
   max-width: clamp(8.4rem, 24vw, 14.8rem);
@@ -313,18 +278,5 @@ body.is-ready .scene {
 
   .doodle__text {
     font-size: 0.72rem;
-  }
-
-  .sticker--top-left {
-    width: 1.8rem;
-  }
-
-  .sticker--top-center {
-    width: 1.58rem;
-    top: -1%;
-  }
-
-  .sticker--bottom-right {
-    width: 2rem;
   }
 }
