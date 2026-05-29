@@ -155,9 +155,11 @@ function renderPlacedStickers() {
       } else {
         node.textContent = placement.symbol;
       }
+      const leftBiasScale = 0.1 + placement.x * 0.9;
+      const finalScale = placement.scale * leftBiasScale;
       node.style.left = `${(placement.x * 100).toFixed(2)}%`;
       node.style.top = `${(placement.y * 100).toFixed(2)}%`;
-      node.style.transform = `translate(-50%, -50%) rotate(${placement.rotation.toFixed(1)}deg) scale(${placement.scale.toFixed(2)})`;
+      node.style.transform = `translate(-50%, -50%) rotate(${placement.rotation.toFixed(1)}deg) scale(${finalScale.toFixed(2)})`;
       node.addEventListener("pointerdown", onPlacedStickerPointerDown);
       overlay.appendChild(node);
     });
