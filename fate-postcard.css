@@ -108,7 +108,7 @@ body {
   width: 100%;
   display: grid;
   place-items: center;
-  margin-top: clamp(6.6rem, 17vw, 11.6rem);
+  margin-top: clamp(8.2rem, 20vw, 13.8rem);
 }
 
 .creator__view[hidden] {
@@ -589,7 +589,7 @@ body.is-decorate-open .creator__sticker-sheet--right {
   }
 
   .creator__view {
-    margin-top: clamp(8.2rem, 14vh, 12.4rem);
+    margin-top: clamp(10rem, 17vh, 14.8rem);
   }
 
   .creator__postcard-wrap,
