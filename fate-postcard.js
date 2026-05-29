@@ -708,34 +708,25 @@ function onSaveLayoutClick(event) {
 
 async function onSaveStickersClick() {
   const frontImageSrc = creatorFrontImage3d?.src || creatorFrontImage2d?.src;
-  const backImageSrc = "backcard.png";
   if (!frontImageSrc) {
     return;
   }
 
   try {
     const frontImage = await loadImageAsync(frontImageSrc);
-    const backImage = await loadImageAsync(backImageSrc);
 
     const frontWidth = frontImage.naturalWidth || 1200;
     const frontHeight = frontImage.naturalHeight || 800;
-    const backWidth = backImage.naturalWidth || frontWidth;
-    const backHeight = backImage.naturalHeight || Math.round((frontHeight / frontWidth) * backWidth);
-    const scaledBackHeight = Math.max(1, Math.round((frontWidth / backWidth) * backHeight));
-    const gap = Math.max(24, Math.round(frontWidth * 0.03));
 
     const canvas = document.createElement("canvas");
     canvas.width = frontWidth;
-    canvas.height = frontHeight + gap + scaledBackHeight;
+    canvas.height = frontHeight;
     const context = canvas.getContext("2d");
     if (!context) {
       return;
     }
 
-    context.fillStyle = "#ffffff";
-    context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(frontImage, 0, 0, frontWidth, frontHeight);
-    context.drawImage(backImage, 0, frontHeight + gap, frontWidth, scaledBackHeight);
 
     const stickerFontSizePx = Math.max(22, Math.round(frontWidth * 0.048));
     context.font = `${stickerFontSizePx}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
@@ -775,7 +766,7 @@ async function onSaveStickersClick() {
 
     const downloadLink = document.createElement("a");
     downloadLink.href = canvas.toDataURL("image/png");
-    downloadLink.download = "postcard-front-back.png";
+    downloadLink.download = "postcard-front.png";
     downloadLink.click();
   } catch (error) {
     window.alert("Could not save this postcard image. Please try again.");
