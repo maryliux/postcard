@@ -14,8 +14,12 @@
       <div class="creator__top-bar">
         <a class="creator__back-button" href="index.html" aria-label="Back to landing page">← back</a>
         <div class="creator__view-toggle" role="group" aria-label="Card display mode">
-          <button class="creator__mode-button is-active" id="mode3dButton" type="button">3d card</button>
-          <button class="creator__mode-button" id="mode2dButton" type="button">2d card</button>
+          <button class="creator__mode-button is-active" id="mode3dButton" type="button" aria-pressed="true">
+            3d card
+          </button>
+          <button class="creator__mode-button" id="mode2dButton" type="button" aria-pressed="false">
+            2d card
+          </button>
         </div>
       </div>
 
@@ -30,6 +34,11 @@
             <div class="creator__postcard-inner" id="creatorPostcardInner">
               <figure class="creator__face creator__face--front">
                 <img id="creatorFrontImage3d" src="frontcard.png" alt="Your uploaded postcard front" />
+                <div class="creator__fortune-overlay" aria-hidden="true">
+                  <p class="creator__fortune-line creator__fortune-line--1" data-fortune-slot="1"></p>
+                  <p class="creator__fortune-line creator__fortune-line--2" data-fortune-slot="2"></p>
+                  <p class="creator__fortune-line creator__fortune-line--3" data-fortune-slot="3"></p>
+                </div>
               </figure>
               <figure class="creator__face creator__face--back">
                 <img src="backcard.png" alt="Postcard back" />
@@ -40,18 +49,17 @@
       </section>
 
       <section class="creator__view creator__view--2d" id="creatorView2d" hidden>
-        <figure class="creator__flat-card">
+        <figure class="creator__flat-card creator__flat-card--front">
           <img id="creatorFrontImage2d" src="frontcard.png" alt="Your uploaded postcard front" />
+          <div class="creator__fortune-overlay" aria-hidden="true">
+            <p class="creator__fortune-line creator__fortune-line--1" data-fortune-slot="1"></p>
+            <p class="creator__fortune-line creator__fortune-line--2" data-fortune-slot="2"></p>
+            <p class="creator__fortune-line creator__fortune-line--3" data-fortune-slot="3"></p>
+          </div>
         </figure>
         <figure class="creator__flat-card">
           <img src="backcard.png" alt="Postcard back" />
         </figure>
-      </section>
-
-      <section class="creator__fortunes" aria-live="polite">
-        <p class="creator__fortune-line" id="fortuneLine1"></p>
-        <p class="creator__fortune-line" id="fortuneLine2"></p>
-        <p class="creator__fortune-line" id="fortuneLine3"></p>
       </section>
     </main>
 

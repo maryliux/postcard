@@ -6,11 +6,7 @@ const creatorView3d = document.querySelector("#creatorView3d");
 const creatorView2d = document.querySelector("#creatorView2d");
 const mode3dButton = document.querySelector("#mode3dButton");
 const mode2dButton = document.querySelector("#mode2dButton");
-const fortuneLines = [
-  document.querySelector("#fortuneLine1"),
-  document.querySelector("#fortuneLine2"),
-  document.querySelector("#fortuneLine3"),
-];
+const fortuneSlotCount = 3;
 
 const UPLOAD_STORAGE_KEY = "uploadedPostcardFrontImage";
 const BASE_PITCH = 8;
@@ -83,12 +79,13 @@ function pickRandomUnique(items, count) {
 }
 
 function setRandomFortunes() {
-  const selected = pickRandomUnique(FORTUNES, fortuneLines.length);
-  fortuneLines.forEach((line, index) => {
-    if (!line) {
-      return;
-    }
-    line.textContent = selected[index] || FORTUNES[index % FORTUNES.length];
+  const selected = pickRandomUnique(FORTUNES, fortuneSlotCount);
+  selected.forEach((fortune, index) => {
+    const slotNumber = index + 1;
+    const slotElements = document.querySelectorAll(`[data-fortune-slot="${slotNumber}"]`);
+    slotElements.forEach((element) => {
+      element.textContent = fortune;
+    });
   });
 }
 
@@ -290,9 +287,21 @@ function setMode(mode) {
   }
   if (mode3dButton) {
     mode3dButton.classList.toggle("is-active", is3d);
+    mode3dButton.setAttribute("aria-pressed", String(is3d));
   }
   if (mode2dButton) {
     mode2dButton.classList.toggle("is-active", !is3d);
+    mode2dButton.setAttribute("aria-pressed", String(!is3d));
+  }
+
+  if (!is3d) {
+    isDragging = false;
+    moved = false;
+    releasePointerIfCaptured();
+    activePointerId = null;
+    if (creatorPostcard) {
+      creatorPostcard.classList.remove("is-dragging");
+    }
   }
 
   if (is3d) {
@@ -320,6 +329,7 @@ if (creatorPostcardInner) {
 applyFrontImage();
 setRandomFortunes();
 commitFaceState(false);
+setMode("3d");
 if (creatorPostcardInner) {
   creatorPostcardInner.style.transition = "";
 }
