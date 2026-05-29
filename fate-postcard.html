@@ -13,15 +13,44 @@
     <main class="creator">
       <div class="creator__top-bar">
         <a class="creator__back-button" href="index.html" aria-label="Back to landing page">← back</a>
-        <div class="creator__view-toggle" role="group" aria-label="Card display mode">
-          <button class="creator__mode-button is-active" id="mode3dButton" type="button" aria-pressed="true">
-            3d card
-          </button>
-          <button class="creator__mode-button" id="mode2dButton" type="button" aria-pressed="false">
-            2d card
+        <div class="creator__controls">
+          <div class="creator__view-toggle" role="group" aria-label="Card display mode">
+            <button class="creator__mode-button is-active" id="mode3dButton" type="button" aria-pressed="true">
+              3d card
+            </button>
+            <button class="creator__mode-button" id="mode2dButton" type="button" aria-pressed="false">
+              2d card
+            </button>
+          </div>
+          <button class="creator__decorate-button" id="decorateToggleButton" type="button" aria-pressed="false">
+            decorate?
           </button>
         </div>
       </div>
+
+      <aside class="creator__sticker-sheet creator__sticker-sheet--left" aria-hidden="true">
+        <p class="creator__sheet-title">sticker sheet</p>
+        <div class="creator__sheet-grid">
+          <span class="creator__sticker">✿</span>
+          <span class="creator__sticker">✦</span>
+          <span class="creator__sticker">♥</span>
+          <span class="creator__sticker">☁</span>
+          <span class="creator__sticker">★</span>
+          <span class="creator__sticker">✧</span>
+        </div>
+      </aside>
+
+      <aside class="creator__sticker-sheet creator__sticker-sheet--right" aria-hidden="true">
+        <p class="creator__sheet-title">sticker sheet</p>
+        <div class="creator__sheet-grid">
+          <span class="creator__sticker">❀</span>
+          <span class="creator__sticker">☀</span>
+          <span class="creator__sticker">♣</span>
+          <span class="creator__sticker">❥</span>
+          <span class="creator__sticker">✩</span>
+          <span class="creator__sticker">✺</span>
+        </div>
+      </aside>
 
       <section class="creator__view creator__view--3d" id="creatorView3d">
         <div class="creator__postcard-wrap">

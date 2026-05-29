@@ -6,6 +6,7 @@ const creatorView3d = document.querySelector("#creatorView3d");
 const creatorView2d = document.querySelector("#creatorView2d");
 const mode3dButton = document.querySelector("#mode3dButton");
 const mode2dButton = document.querySelector("#mode2dButton");
+const decorateToggleButton = document.querySelector("#decorateToggleButton");
 const fortuneSlotCount = 3;
 
 const UPLOAD_STORAGE_KEY = "uploadedPostcardFrontImage";
@@ -309,6 +310,19 @@ function setMode(mode) {
   }
 }
 
+function setDecorateSheetsOpen(isOpen) {
+  document.body.classList.toggle("is-decorate-open", isOpen);
+  if (decorateToggleButton) {
+    decorateToggleButton.classList.toggle("is-active", isOpen);
+    decorateToggleButton.setAttribute("aria-pressed", String(isOpen));
+  }
+}
+
+function onDecorateToggleClick() {
+  const nextOpenState = !document.body.classList.contains("is-decorate-open");
+  setDecorateSheetsOpen(nextOpenState);
+}
+
 if (creatorPostcard) {
   creatorPostcard.addEventListener("pointerdown", onPointerDown);
   creatorPostcard.addEventListener("pointermove", onPointerMove);
@@ -322,6 +336,10 @@ if (mode3dButton && mode2dButton) {
   mode2dButton.addEventListener("click", () => setMode("2d"));
 }
 
+if (decorateToggleButton) {
+  decorateToggleButton.addEventListener("click", onDecorateToggleClick);
+}
+
 if (creatorPostcardInner) {
   creatorPostcardInner.style.transition = "none";
 }
@@ -330,6 +348,7 @@ applyFrontImage();
 setRandomFortunes();
 commitFaceState(false);
 setMode("3d");
+setDecorateSheetsOpen(false);
 if (creatorPostcardInner) {
   creatorPostcardInner.style.transition = "";
 }
