@@ -43,7 +43,6 @@ const STOP_EPSILON = 0.03;
 const MAX_ANNOTATION_CHARS = 50;
 const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 380 : 3250;
-const ARROW_SPACE_REM = 0.95;
 const FORTUNE_STYLE_ANNOTATIONS = [
   "your luck changes after the next full moon.",
   "someone from your past will text this week.",
@@ -132,7 +131,7 @@ function rectsOverlap(a, b, padding = 10) {
 }
 
 function estimateRectForCandidate(candidate, zone, textLength, containerRect, rootFontSizePx) {
-  const widthPx = candidate.widthRem * rootFontSizePx + ARROW_SPACE_REM * rootFontSizePx;
+  const widthPx = candidate.widthRem * rootFontSizePx;
   const charsPerLine = Math.max(15, Math.floor(widthPx / (rootFontSizePx * 0.5)));
   const lineCount = Math.max(1, Math.ceil(textLength / charsPerLine));
   const lineHeightPx = rootFontSizePx * 0.78;

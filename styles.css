@@ -286,47 +286,7 @@ body.is-ready .scene {
 
 .doodle {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 0.18rem;
   max-width: clamp(8.4rem, 24vw, 14.8rem);
-}
-
-.doodle__arrow {
-  position: relative;
-  width: clamp(0.78rem, 1.25vw, 1rem);
-  height: 0.34rem;
-  flex: 0 0 auto;
-}
-
-.doodle__arrow::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: calc(100% - 0.18rem);
-  border-top: 1.3px solid rgba(178, 40, 51, 0.9);
-  transform: translateY(-50%);
-}
-
-.doodle__arrow::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: 0.24rem;
-  height: 0.24rem;
-  border-top: 1.3px solid rgba(178, 40, 51, 0.9);
-  border-right: 1.3px solid rgba(178, 40, 51, 0.9);
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.doodle--left {
-  flex-direction: row-reverse;
-}
-
-.doodle--left .doodle__arrow {
-  transform: scaleX(-1);
 }
 
 .doodle__text {
@@ -427,9 +387,5 @@ body.is-ready .scene {
 
   .doodle__text {
     font-size: 0.72rem;
-  }
-
-  .doodle__arrow {
-    width: 0.72rem;
   }
 }
