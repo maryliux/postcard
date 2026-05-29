@@ -20,7 +20,6 @@ body {
   inset: 0;
   display: grid;
   place-items: center;
-  overflow: hidden;
   background: #f4f3ed;
   z-index: 20;
   transition: opacity 420ms ease, visibility 420ms ease;
@@ -31,22 +30,8 @@ body {
   visibility: hidden;
 }
 
-.preloader::after {
-  content: "";
-  position: absolute;
-  width: clamp(3.8rem, 12vw, 6.4rem);
-  aspect-ratio: 1;
-  border-radius: 999px;
-  border: 1px solid rgba(37, 37, 37, 0.2);
-  box-shadow: 0 0 0 0 rgba(23, 23, 23, 0.15);
-  opacity: 0;
-  transform: scale(0.34);
-  animation: stamp-aura 1100ms cubic-bezier(0.16, 0.84, 0.24, 1) forwards;
-  pointer-events: none;
-}
-
 .preloader__stamp {
-  width: clamp(0.56rem, 1.7vw, 0.95rem);
+  width: clamp(2.8rem, 8.5vw, 4.75rem);
   height: auto;
   display: block;
   opacity: 0;
@@ -71,24 +56,6 @@ body {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1) rotate(0deg);
-  }
-}
-
-@keyframes stamp-aura {
-  0% {
-    opacity: 0;
-    transform: scale(0.34);
-    box-shadow: 0 0 0 0 rgba(23, 23, 23, 0.16);
-  }
-  45% {
-    opacity: 0.34;
-    transform: scale(0.95);
-    box-shadow: 0 0 0 9px rgba(23, 23, 23, 0.08);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.35);
-    box-shadow: 0 0 0 18px rgba(23, 23, 23, 0);
   }
 }
 
@@ -121,11 +88,6 @@ body.is-ready .scene {
     animation: none;
     opacity: 1;
     transform: none;
-  }
-
-  .preloader::after {
-    animation: none;
-    opacity: 0;
   }
 
   .scene {
