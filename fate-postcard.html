@@ -56,8 +56,9 @@
             aria-label="Interactive postcard. Drag in any direction or click to flip."
           >
             <div class="creator__postcard-inner" id="creatorPostcardInner">
-              <figure class="creator__face creator__face--front">
+              <figure class="creator__face creator__face--front" id="creatorFrontDrop3d">
                 <img id="creatorFrontImage3d" src="frontcard.png" alt="Your uploaded postcard front" />
+                <div class="creator__sticker-overlay" id="creatorStickerOverlay3d" aria-hidden="true"></div>
                 <div class="creator__fortune-overlay" aria-hidden="true">
                   <p class="creator__fortune-line creator__fortune-line--1" data-fortune-slot="1"></p>
                   <p class="creator__fortune-line creator__fortune-line--2" data-fortune-slot="2"></p>
@@ -70,11 +71,20 @@
             </div>
           </button>
         </div>
+        <section class="creator__actions" data-actions-bar hidden>
+          <button class="creator__mode-button creator__action-button" data-action="undo" type="button">
+            undo
+          </button>
+          <button class="creator__mode-button creator__action-button" data-action="save" type="button">
+            save
+          </button>
+        </section>
       </section>
 
       <section class="creator__view creator__view--2d" id="creatorView2d" hidden>
-        <figure class="creator__flat-card creator__flat-card--front">
+        <figure class="creator__flat-card creator__flat-card--front" id="creatorFrontDrop2d">
           <img id="creatorFrontImage2d" src="frontcard.png" alt="Your uploaded postcard front" />
+          <div class="creator__sticker-overlay" id="creatorStickerOverlay2d" aria-hidden="true"></div>
           <div class="creator__fortune-overlay" aria-hidden="true">
             <p class="creator__fortune-line creator__fortune-line--1" data-fortune-slot="1"></p>
             <p class="creator__fortune-line creator__fortune-line--2" data-fortune-slot="2"></p>
@@ -84,6 +94,14 @@
         <figure class="creator__flat-card">
           <img src="backcard.png" alt="Postcard back" />
         </figure>
+        <section class="creator__actions" data-actions-bar hidden>
+          <button class="creator__mode-button creator__action-button" data-action="undo" type="button">
+            undo
+          </button>
+          <button class="creator__mode-button creator__action-button" data-action="save" type="button">
+            save
+          </button>
+        </section>
       </section>
     </main>
 

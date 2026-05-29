@@ -2,11 +2,19 @@ const creatorPostcard = document.querySelector("#creatorPostcard");
 const creatorPostcardInner = document.querySelector("#creatorPostcardInner");
 const creatorFrontImage3d = document.querySelector("#creatorFrontImage3d");
 const creatorFrontImage2d = document.querySelector("#creatorFrontImage2d");
+const creatorFrontDrop3d = document.querySelector("#creatorFrontDrop3d");
+const creatorFrontDrop2d = document.querySelector("#creatorFrontDrop2d");
+const creatorStickerOverlay3d = document.querySelector("#creatorStickerOverlay3d");
+const creatorStickerOverlay2d = document.querySelector("#creatorStickerOverlay2d");
 const creatorView3d = document.querySelector("#creatorView3d");
 const creatorView2d = document.querySelector("#creatorView2d");
 const mode3dButton = document.querySelector("#mode3dButton");
 const mode2dButton = document.querySelector("#mode2dButton");
 const decorateToggleButton = document.querySelector("#decorateToggleButton");
+const sheetStickers = Array.from(document.querySelectorAll(".creator__sheet-grid .creator__sticker"));
+const actionBars = Array.from(document.querySelectorAll("[data-actions-bar]"));
+const undoButtons = Array.from(document.querySelectorAll('[data-action="undo"]'));
+const saveButtons = Array.from(document.querySelectorAll('[data-action="save"]'));
 const fortuneSlotCount = 3;
 
 const UPLOAD_STORAGE_KEY = "uploadedPostcardFrontImage";
@@ -57,6 +65,9 @@ let lastPointerX = 0;
 let lastPointerTime = 0;
 let pointerVelocityX = 0;
 let animationFrameId = null;
+let stickerPlacements = [];
+let stickerIdCounter = 0;
+let stickerDragState = null;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -88,6 +99,44 @@ function setRandomFortunes() {
       element.textContent = fortune;
     });
   });
+}
+
+function randomInRange(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function setActionsVisible(isVisible) {
+  actionBars.forEach((bar) => {
+    bar.hidden = !isVisible;
+  });
+}
+
+function renderPlacedStickers() {
+  const overlays = [creatorStickerOverlay3d, creatorStickerOverlay2d];
+  overlays.forEach((overlay) => {
+    if (!overlay) {
+      return;
+    }
+
+    overlay.innerHTML = "";
+    stickerPlacements.forEach((placement) => {
+      const node = document.createElement("span");
+      node.className = "creator__placed-sticker";
+      node.textContent = placement.symbol;
+      node.style.left = `${(placement.x * 100).toFixed(2)}%`;
+      node.style.top = `${(placement.y * 100).toFixed(2)}%`;
+      node.style.transform = `translate(-50%, -50%) rotate(${placement.rotation.toFixed(1)}deg) scale(${placement.scale.toFixed(2)})`;
+      overlay.appendChild(node);
+    });
+  });
+}
+
+function getActiveFrontDropTarget() {
+  return creatorView2d && !creatorView2d.hidden ? creatorFrontDrop2d : creatorFrontDrop3d;
+}
+
+function isPointInRect(clientX, clientY, rect) {
+  return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
 }
 
 function getUploadedFrontImage() {
@@ -161,7 +210,7 @@ function commitFaceState(showBack) {
 }
 
 function onPointerDown(event) {
-  if (!creatorPostcard || creatorView3d?.hidden) {
+  if (!creatorPostcard || creatorView3d?.hidden || stickerDragState) {
     return;
   }
 
@@ -312,6 +361,9 @@ function setMode(mode) {
 
 function setDecorateSheetsOpen(isOpen) {
   document.body.classList.toggle("is-decorate-open", isOpen);
+  if (!isOpen) {
+    stopStickerDrag();
+  }
   if (decorateToggleButton) {
     decorateToggleButton.classList.toggle("is-active", isOpen);
     decorateToggleButton.setAttribute("aria-pressed", String(isOpen));
@@ -321,6 +373,160 @@ function setDecorateSheetsOpen(isOpen) {
 function onDecorateToggleClick() {
   const nextOpenState = !document.body.classList.contains("is-decorate-open");
   setDecorateSheetsOpen(nextOpenState);
+}
+
+function updateDragGhostPosition(clientX, clientY) {
+  if (!stickerDragState || !stickerDragState.ghost) {
+    return;
+  }
+
+  stickerDragState.ghost.style.left = `${clientX}px`;
+  stickerDragState.ghost.style.top = `${clientY}px`;
+}
+
+function stopStickerDrag() {
+  if (!stickerDragState) {
+    return;
+  }
+
+  if (stickerDragState.ghost) {
+    stickerDragState.ghost.remove();
+  }
+
+  window.removeEventListener("pointermove", onGlobalStickerPointerMove);
+  window.removeEventListener("pointerup", onGlobalStickerPointerUp);
+  window.removeEventListener("pointercancel", onGlobalStickerPointerUp);
+  stickerDragState = null;
+}
+
+function tryPlaceStickerAtPoint(symbol, clientX, clientY) {
+  const dropTarget = getActiveFrontDropTarget();
+  if (!dropTarget) {
+    return false;
+  }
+
+  const rect = dropTarget.getBoundingClientRect();
+  if (!isPointInRect(clientX, clientY, rect)) {
+    return false;
+  }
+
+  const x = clamp((clientX - rect.left) / rect.width, 0.02, 0.98);
+  const y = clamp((clientY - rect.top) / rect.height, 0.02, 0.98);
+  stickerPlacements.push({
+    id: stickerIdCounter++,
+    symbol,
+    x,
+    y,
+    rotation: randomInRange(-17, 17),
+    scale: randomInRange(0.94, 1.18),
+  });
+  renderPlacedStickers();
+  setActionsVisible(stickerPlacements.length > 0);
+  return true;
+}
+
+function onGlobalStickerPointerMove(event) {
+  if (!stickerDragState) {
+    return;
+  }
+  updateDragGhostPosition(event.clientX, event.clientY);
+}
+
+function onGlobalStickerPointerUp(event) {
+  if (!stickerDragState || event.pointerId !== stickerDragState.pointerId) {
+    return;
+  }
+
+  tryPlaceStickerAtPoint(stickerDragState.symbol, event.clientX, event.clientY);
+  stopStickerDrag();
+}
+
+function onSheetStickerPointerDown(event) {
+  if (!document.body.classList.contains("is-decorate-open")) {
+    return;
+  }
+
+  const stickerNode = event.currentTarget;
+  const symbol = stickerNode.textContent ? stickerNode.textContent.trim() : "";
+  if (!symbol) {
+    return;
+  }
+
+  event.preventDefault();
+  stopStickerDrag();
+
+  const ghost = document.createElement("span");
+  ghost.className = "creator__drag-ghost";
+  ghost.textContent = symbol;
+  document.body.appendChild(ghost);
+
+  stickerDragState = {
+    symbol,
+    pointerId: event.pointerId,
+    ghost,
+  };
+  updateDragGhostPosition(event.clientX, event.clientY);
+
+  window.addEventListener("pointermove", onGlobalStickerPointerMove);
+  window.addEventListener("pointerup", onGlobalStickerPointerUp);
+  window.addEventListener("pointercancel", onGlobalStickerPointerUp);
+}
+
+function onUndoStickersClick() {
+  if (stickerPlacements.length === 0) {
+    return;
+  }
+
+  stickerPlacements = stickerPlacements.slice(0, -1);
+  renderPlacedStickers();
+  setActionsVisible(stickerPlacements.length > 0);
+}
+
+function onSaveStickersClick() {
+  if (stickerPlacements.length === 0) {
+    return;
+  }
+
+  const sourceImageSrc = creatorFrontImage3d?.src || creatorFrontImage2d?.src;
+  if (!sourceImageSrc) {
+    return;
+  }
+
+  const image = new Image();
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth || 1200;
+    canvas.height = image.naturalHeight || 800;
+    const context = canvas.getContext("2d");
+    if (!context) {
+      return;
+    }
+
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const stickerFontSizePx = Math.max(22, Math.round(canvas.width * 0.048));
+    context.font = `${stickerFontSizePx}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+
+    stickerPlacements.forEach((placement) => {
+      context.save();
+      context.translate(placement.x * canvas.width, placement.y * canvas.height);
+      context.rotate((placement.rotation * Math.PI) / 180);
+      context.scale(placement.scale, placement.scale);
+      context.fillText(placement.symbol, 0, 0);
+      context.restore();
+    });
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = canvas.toDataURL("image/png");
+    downloadLink.download = "decorated-postcard.png";
+    downloadLink.click();
+  };
+
+  image.onerror = () => {
+    window.alert("Could not save this postcard image. Please try again.");
+  };
+  image.src = sourceImageSrc;
 }
 
 if (creatorPostcard) {
@@ -340,12 +546,26 @@ if (decorateToggleButton) {
   decorateToggleButton.addEventListener("click", onDecorateToggleClick);
 }
 
+sheetStickers.forEach((stickerNode) => {
+  stickerNode.addEventListener("pointerdown", onSheetStickerPointerDown);
+});
+
+undoButtons.forEach((button) => {
+  button.addEventListener("click", onUndoStickersClick);
+});
+
+saveButtons.forEach((button) => {
+  button.addEventListener("click", onSaveStickersClick);
+});
+
 if (creatorPostcardInner) {
   creatorPostcardInner.style.transition = "none";
 }
 
 applyFrontImage();
 setRandomFortunes();
+renderPlacedStickers();
+setActionsVisible(false);
 commitFaceState(false);
 setMode("3d");
 setDecorateSheetsOpen(false);
