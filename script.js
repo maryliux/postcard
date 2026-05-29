@@ -42,7 +42,7 @@ const INERTIA_MULTIPLIER = 120;
 const STOP_EPSILON = 0.03;
 const MAX_ANNOTATION_CHARS = 50;
 const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 260 : 1150;
+const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 260 : 1280;
 const FORTUNE_STYLE_ANNOTATIONS = [
   "your luck changes after the next full moon.",
   "someone from your past will text this week.",

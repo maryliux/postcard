@@ -30,64 +30,29 @@ body {
   visibility: hidden;
 }
 
-.preloader__envelope {
-  position: relative;
-  width: clamp(12rem, 33vw, 20rem);
-  aspect-ratio: 10 / 7.1;
-  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.14));
+.preloader__stamp {
+  width: clamp(5.6rem, 17vw, 9.5rem);
+  height: auto;
+  display: block;
+  opacity: 0;
+  transform: scale(0.86) translateY(10px);
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2));
+  animation: stamp-preload 900ms cubic-bezier(0.2, 0.7, 0.18, 1) forwards;
 }
 
-.preloader__back {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(207, 207, 207, 0.9);
-  border-radius: 0.08rem;
-  background: #f5f5f4;
-}
-
-.preloader__body {
-  position: absolute;
-  inset: auto 0 0;
-  height: 58%;
-  border: 1px solid rgba(210, 210, 210, 0.9);
-  border-top: 0;
-  background: #f7f7f6;
-  z-index: 5;
-  overflow: hidden;
-}
-
-.preloader__body::before,
-.preloader__body::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background: #fcfcfb;
-  border-top: 1px solid rgba(220, 220, 220, 0.9);
-}
-
-.preloader__body::before {
-  left: 0;
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-}
-
-.preloader__body::after {
-  right: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
-}
-
-.preloader__top-flap {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 100%;
-  height: 59%;
-  background: #f6f6f5;
-  border: 1px solid rgba(212, 212, 212, 0.9);
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  transform: translateX(-50%);
-  z-index: 6;
+@keyframes stamp-preload {
+  0% {
+    opacity: 0;
+    transform: scale(0.86) translateY(10px);
+  }
+  58% {
+    opacity: 1;
+    transform: scale(1.04) translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .scene {
@@ -108,6 +73,22 @@ body {
 body.is-ready .scene {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader {
+    transition-duration: 220ms;
+  }
+
+  .preloader__stamp {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .scene {
+    transition-duration: 220ms;
+  }
 }
 
 .scene__top {
