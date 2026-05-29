@@ -291,7 +291,7 @@ body.is-decorate-open .creator__sticker-sheet--right {
 .creator__sticker-overlay {
   position: absolute;
   inset: 0;
-  pointer-events: none;
+  pointer-events: auto;
   z-index: 3;
 }
 

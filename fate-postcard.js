@@ -523,10 +523,6 @@ function onGlobalStickerPointerUp(event) {
 }
 
 function onPlacedStickerPointerDown(event) {
-  if (!document.body.classList.contains("is-decorate-open")) {
-    return;
-  }
-
   const stickerNode = event.currentTarget;
   const placementId = Number(stickerNode.dataset.placementId);
   if (!Number.isFinite(placementId)) {
