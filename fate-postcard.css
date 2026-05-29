@@ -229,6 +229,29 @@ body {
   transform: rotate(-3deg);
 }
 
+/* 2D front-card fortune boundaries: top/left/right only (no bottom edge). */
+.creator__flat-card--front .creator__fortune-line--1 {
+  right: -18%;
+  top: -10%;
+  left: auto;
+  bottom: auto;
+}
+
+.creator__flat-card--front .creator__fortune-line--2 {
+  left: -20%;
+  top: 36%;
+  right: auto;
+  bottom: auto;
+}
+
+.creator__flat-card--front .creator__fortune-line--3 {
+  right: -19%;
+  top: 63%;
+  left: auto;
+  bottom: auto;
+  transform: rotate(-4deg);
+}
+
 @media (max-width: 640px) {
   .creator__top-bar {
     right: 0.85rem;
@@ -278,5 +301,20 @@ body {
   .creator__fortune-line--2 {
     left: -18%;
     top: 58%;
+  }
+
+  .creator__flat-card--front .creator__fortune-line--1 {
+    right: -14%;
+    top: -8.5%;
+  }
+
+  .creator__flat-card--front .creator__fortune-line--2 {
+    left: -15%;
+    top: 38%;
+  }
+
+  .creator__flat-card--front .creator__fortune-line--3 {
+    right: -14%;
+    top: 64%;
   }
 }
