@@ -215,13 +215,17 @@ body.is-ready .scene {
 }
 
 .doodle__arrow {
-  width: clamp(0.9rem, 1.9vw, 1.25rem);
+  --arrow-flip: 1;
+  width: clamp(0.62rem, 1.25vw, 0.86rem);
   height: auto;
   flex: 0 0 auto;
+  opacity: 0.94;
+  transform: scaleX(var(--arrow-flip)) scaleY(0.62);
+  transform-origin: center;
 }
 
 .doodle--right .doodle__arrow {
-  transform: scaleX(-1);
+  --arrow-flip: -1;
 }
 
 .doodle--left {
@@ -229,7 +233,7 @@ body.is-ready .scene {
 }
 
 .doodle__text {
-  font-family: "Beth Ellen", "Brush Script MT", "Segoe Script", cursive;
+  font-family: "Permanent Marker", "Marker Felt", "Bradley Hand", cursive;
   font-size: clamp(0.5rem, 0.86vw, 0.64rem);
   line-height: 1.1;
   white-space: normal;
@@ -328,6 +332,6 @@ body.is-ready .scene {
   }
 
   .doodle__arrow {
-    width: 0.76rem;
+    width: 0.58rem;
   }
 }
