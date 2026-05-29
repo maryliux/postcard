@@ -1,5 +1,6 @@
 const postcard = document.querySelector("#postcard");
 const postcardInner = document.querySelector("#postcardInner");
+const doodles = Array.from(document.querySelectorAll(".postcard__doodles .doodle"));
 
 let isDragging = false;
 let moved = false;
@@ -35,9 +36,104 @@ const DRAG_LERP = 0.34;
 const SETTLE_LERP = 0.18;
 const INERTIA_MULTIPLIER = 120;
 const STOP_EPSILON = 0.03;
+const LYRIC_STYLE_ANNOTATIONS = [
+  "diva since birth",
+  "lots of kids... lots of them...",
+  "all heart, all glitter",
+  "born to be dramatic",
+  "romance in every timeline",
+  "midnight songbird energy",
+  "soft chaos, loud dreams",
+  "cinematic from day one",
+  "main character in every room",
+  "loves too hard, laughs harder",
+  "moonlight and bad decisions",
+  "future legend loading...",
+  "too glam to be subtle",
+  "hot mess, holy aura",
+  "raised by playlists and fate",
+  "kisses like a plot twist",
+  "crying cute, healing faster",
+  "glitter in the apocalypse",
+];
+const DOODLE_ZONES = [
+  {
+    horizontalProp: "right",
+    horizontalRange: [-40, -26],
+    verticalProp: "top",
+    verticalRange: [8, 24],
+    rotationRange: [-12, -2],
+    widthRange: [5.6, 7.2],
+  },
+  {
+    horizontalProp: "left",
+    horizontalRange: [-48, -33],
+    verticalProp: "bottom",
+    verticalRange: [6, 20],
+    rotationRange: [5, 14],
+    widthRange: [6.4, 8.2],
+  },
+  {
+    horizontalProp: "right",
+    horizontalRange: [-38, -25],
+    verticalProp: "top",
+    verticalRange: [-16, -2],
+    rotationRange: [-9, 4],
+    widthRange: [5.5, 7.3],
+  },
+];
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function randomInRange(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function pickRandomUnique(items, count) {
+  const pool = [...items];
+  const chosen = [];
+
+  while (pool.length > 0 && chosen.length < count) {
+    const randomIndex = Math.floor(Math.random() * pool.length);
+    chosen.push(pool.splice(randomIndex, 1)[0]);
+  }
+
+  return chosen;
+}
+
+function applyRandomizedAnnotations() {
+  if (doodles.length === 0) {
+    return;
+  }
+
+  const annotationTexts = pickRandomUnique(LYRIC_STYLE_ANNOTATIONS, doodles.length);
+
+  doodles.forEach((doodle, index) => {
+    const textElement = doodle.querySelector(".doodle__text");
+    const zone = DOODLE_ZONES[index % DOODLE_ZONES.length];
+    const annotationText = annotationTexts[index] || LYRIC_STYLE_ANNOTATIONS[index % LYRIC_STYLE_ANNOTATIONS.length];
+
+    if (textElement) {
+      textElement.textContent = annotationText;
+    }
+
+    doodle.style.left = "";
+    doodle.style.right = "";
+    doodle.style.top = "";
+    doodle.style.bottom = "";
+
+    const horizontalValue = randomInRange(zone.horizontalRange[0], zone.horizontalRange[1]).toFixed(1);
+    const verticalValue = randomInRange(zone.verticalRange[0], zone.verticalRange[1]).toFixed(1);
+    const rotationValue = randomInRange(zone.rotationRange[0], zone.rotationRange[1]).toFixed(1);
+    const widthValue = randomInRange(zone.widthRange[0], zone.widthRange[1]).toFixed(2);
+
+    doodle.style[zone.horizontalProp] = `${horizontalValue}%`;
+    doodle.style[zone.verticalProp] = `${verticalValue}%`;
+    doodle.style.transform = `rotate(${rotationValue}deg)`;
+    doodle.style.maxWidth = `${widthValue}rem`;
+  });
 }
 
 function normalizeAngle(value) {
@@ -201,4 +297,5 @@ postcard.addEventListener("pointercancel", onPointerCancel);
 postcard.addEventListener("keydown", onKeyDown);
 
 postcardInner.style.transition = "none";
+applyRandomizedAnnotations();
 commitFaceState(false);
