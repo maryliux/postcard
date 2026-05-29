@@ -107,7 +107,6 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  color: #b22a35;
 }
 
 .doodle {
@@ -117,52 +116,12 @@ body {
   gap: 0.38rem;
 }
 
-.doodle__line {
-  position: relative;
-  display: inline-block;
-  width: clamp(1.8rem, 4.6vw, 3.4rem);
-  height: 0.78rem;
+.doodle__arrow {
+  width: clamp(1.8rem, 4.8vw, 3.4rem);
+  height: clamp(0.75rem, 2vw, 1.4rem);
+  object-fit: contain;
+  object-position: center;
   flex: 0 0 auto;
-}
-
-.doodle__line::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0.1rem;
-  right: 0.34rem;
-  border-top: 2px solid currentColor;
-  border-radius: 999px;
-  transform: translateY(-50%) rotate(-5deg);
-  transform-origin: left center;
-}
-
-.doodle__line::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: 0.45rem;
-  height: 0.45rem;
-  border-top: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.doodle__line--left::before {
-  left: 0.34rem;
-  right: 0.1rem;
-  transform: translateY(-50%) rotate(5deg);
-}
-
-.doodle__line--left::after {
-  left: 0;
-  right: auto;
-  border-top: 0;
-  border-right: 0;
-  border-left: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  transform: translateY(-50%) rotate(45deg);
 }
 
 .doodle__text {
@@ -171,6 +130,7 @@ body {
   line-height: 1;
   white-space: nowrap;
   letter-spacing: 0.01em;
+  color: #b22a35;
 }
 
 .doodle--3 {
@@ -179,16 +139,28 @@ body {
   transform: rotate(-4deg);
 }
 
+.doodle--3 .doodle__arrow {
+  transform: rotate(-7deg);
+}
+
 .doodle--1 {
   top: 8%;
   right: -29%;
   transform: rotate(-10deg);
 }
 
+.doodle--1 .doodle__arrow {
+  transform: rotate(-2deg);
+}
+
 .doodle--2 {
   left: -44%;
   bottom: 19%;
   transform: rotate(10deg);
+}
+
+.doodle--2 .doodle__arrow {
+  transform: scaleX(-1) rotate(-3deg);
 }
 
 .doodle--2 .doodle__text {
