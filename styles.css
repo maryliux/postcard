@@ -284,3 +284,39 @@ body.is-ready .scene {
     font-size: 0.72rem;
   }
 }
+
+@media (min-width: 1600px) {
+  .scene {
+    padding: 2.4rem 3.2rem;
+    row-gap: 1.8rem;
+  }
+
+  .scene__top {
+    margin-bottom: 2.5rem;
+  }
+
+  .scene__quote {
+    max-width: 74ch;
+  }
+
+  .postcard-wrap {
+    width: min(46vw, 34rem);
+  }
+
+  .doodle {
+    max-width: 15.6rem;
+  }
+
+  .doodle__text {
+    font-size: 1.28rem;
+  }
+
+  .scene__bottom {
+    margin-top: 2.1rem;
+    gap: 1.2rem;
+  }
+
+  .scene__tagline {
+    font-size: clamp(3rem, 4.8vw, 5.3rem);
+  }
+}
