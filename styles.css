@@ -32,17 +32,18 @@ body {
 
 .preloader__envelope {
   position: relative;
-  width: clamp(10.5rem, 28vw, 18rem);
+  width: clamp(11.5rem, 31vw, 19.5rem);
   aspect-ratio: 6 / 4.2;
-  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.13));
+  filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.12));
 }
 
 .preloader__body {
   position: absolute;
   inset: auto 0 0;
-  height: 57%;
-  background: #f7f6f3;
-  border: 1px solid rgba(186, 182, 172, 0.74);
+  height: 58%;
+  background: #f4f4f4;
+  border: 1px solid rgba(208, 208, 208, 0.95);
+  border-radius: 0 0 0.1rem 0.1rem;
   z-index: 3;
 }
 
@@ -53,64 +54,52 @@ body {
   top: 0;
   width: 50%;
   height: 100%;
-  background: #fcfbf8;
-  border-top: 1px solid rgba(186, 182, 172, 0.64);
+  background: #f9f9f9;
+  border-top: 1px solid rgba(218, 218, 218, 0.9);
 }
 
 .preloader__body::before {
   left: 0;
-  clip-path: polygon(0 0, 100% 0, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
 }
 
 .preloader__body::after {
   right: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%);
 }
 
 .preloader__flap {
   position: absolute;
-  inset: 0 0 auto;
-  height: 64%;
-  background: #fdfcf9;
-  border: 1px solid rgba(186, 182, 172, 0.62);
-  clip-path: polygon(50% 0, 0 100%, 100% 100%);
-  transform-origin: center bottom;
-  animation: preloader-flap-open 900ms ease-out 180ms both;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 63%;
+  background: #f6f6f6;
+  border: 1px solid rgba(212, 212, 212, 0.9);
+  clip-path: polygon(50% 2%, 0 100%, 100% 100%);
   z-index: 4;
 }
 
 .preloader__card {
   position: absolute;
   left: 50%;
-  bottom: 16%;
+  bottom: 13%;
   width: 58%;
   aspect-ratio: 3 / 2;
-  border-radius: 0.25rem;
-  border: 1px solid rgba(25, 25, 25, 0.1);
+  border-radius: 0.14rem;
+  border: 1px solid rgba(25, 25, 25, 0.08);
   background: #ffffff url("front1.png") center / cover no-repeat;
-  transform: translate(-50%, 46%);
-  animation: preloader-card-rise 1800ms cubic-bezier(0.24, 0.7, 0.25, 1) 260ms forwards;
+  transform: translate(-50%, 60%);
+  animation: preloader-card-rise 1300ms cubic-bezier(0.22, 0.68, 0.27, 1) 130ms forwards;
   z-index: 2;
-}
-
-@keyframes preloader-flap-open {
-  0% {
-    transform: rotateX(0deg);
-  }
-  100% {
-    transform: rotateX(60deg);
-  }
 }
 
 @keyframes preloader-card-rise {
   0% {
-    transform: translate(-50%, 52%) rotate(-2deg);
-  }
-  55% {
-    transform: translate(-50%, -8%) rotate(-2deg);
+    transform: translate(-50%, 60%) rotate(-2deg);
   }
   100% {
-    transform: translate(-50%, -24%) rotate(-3deg);
+    transform: translate(-50%, -28%) rotate(-2.6deg);
   }
 }
 
@@ -219,7 +208,24 @@ body.is-ready .scene {
 
 .doodle {
   position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.26rem;
   max-width: clamp(7.8rem, 22vw, 13.8rem);
+}
+
+.doodle__arrow {
+  width: clamp(0.9rem, 1.9vw, 1.25rem);
+  height: auto;
+  flex: 0 0 auto;
+}
+
+.doodle--right .doodle__arrow {
+  transform: scaleX(-1);
+}
+
+.doodle--left {
+  flex-direction: row-reverse;
 }
 
 .doodle__text {
@@ -319,5 +325,9 @@ body.is-ready .scene {
 
   .doodle__text {
     font-size: 0.44rem;
+  }
+
+  .doodle__arrow {
+    width: 0.76rem;
   }
 }

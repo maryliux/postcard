@@ -41,35 +41,36 @@ const INERTIA_MULTIPLIER = 120;
 const STOP_EPSILON = 0.03;
 const MAX_ANNOTATION_CHARS = 50;
 const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 550 : 2400;
-const LYRIC_STYLE_ANNOTATIONS = [
-  "from the moment i saw you i stayed for every storm after.",
-  "i keep dancing like the sky owes me one more miracle.",
-  "if fate is late i'll wait with lipstick and loud music.",
-  "i wear my heart like eyeliner sharp and impossible.",
-  "somewhere between midnight and sunrise i chose myself.",
-  "they called it chaos but i called it choreography.",
-  "i fall in love with moments then frame them in song.",
-  "my dreams are too bright for quiet endings.",
-  "i write your name in the margins of every chorus.",
-  "we were fireworks pretending to be candlelight.",
-  "i keep a pocket full of wishes and wild plans.",
-  "some hearts break mine remixes the pain.",
-  "i was made for beautiful trouble and neon hope.",
-  "if this is a love song turn it all the way up.",
-  "i choose wonder every time even in the dark.",
-  "tell destiny i'm late i stopped for the moon.",
-  "i learned to survive loudly and look good doing it.",
-  "we were always a little legendary in poor lighting.",
-  "my soft heart still bites when the moment calls.",
-  "every goodbye i write becomes a better verse.",
-  "the city sleeps but my longing stays awake.",
-  "i carry sparkles and sorrow in the same bag.",
-  "you kissed me once and the room changed color.",
-  "i trust the music more than i trust the map.",
-  "all my best decisions started with one bad idea.",
-  "the future keeps calling me by my stage name.",
-  "i make room for joy even when it arrives messy.",
+const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 420 : 1550;
+const ARROW_SPACE_REM = 1.35;
+const FORTUNE_STYLE_ANNOTATIONS = [
+  "your luck changes after the next full moon.",
+  "someone from your past will text this week.",
+  "a secret crush is closer than you think.",
+  "trust your first instinct this Friday night.",
+  "money finds you after one brave decision.",
+  "you are one yes away from a new chapter.",
+  "an old dream returns with better timing.",
+  "expect soft love and loud laughter soon.",
+  "the next door opens when you stop forcing.",
+  "a bold outfit brings a lucky encounter.",
+  "your next trip will change your routine.",
+  "you are protected while risking your heart.",
+  "say no once and watch better things arrive.",
+  "someone is manifesting you right now.",
+  "your glow-up starts with one honest choice.",
+  "a late-night call brings good news.",
+  "you'll outgrow what once outgrew you.",
+  "the answer appears after you rest.",
+  "your creativity is about to pay rent.",
+  "what feels delayed is being upgraded.",
+  "a small gamble leads to a big payoff.",
+  "your name is mentioned in the right room.",
+  "someone kind helps you unexpectedly.",
+  "your next beginning starts tomorrow morning.",
+  "listen to your body before your calendar.",
+  "you'll receive clarity in a random moment.",
+  "the universe likes your latest plan.",
 ];
 const DOODLE_ZONES = [
   {
@@ -154,7 +155,7 @@ function rectsOverlap(a, b, padding = 10) {
 }
 
 function estimateRectForCandidate(candidate, zone, textLength, containerRect, rootFontSizePx) {
-  const widthPx = candidate.widthRem * rootFontSizePx;
+  const widthPx = candidate.widthRem * rootFontSizePx + ARROW_SPACE_REM * rootFontSizePx;
   const charsPerLine = Math.max(15, Math.floor(widthPx / (rootFontSizePx * 0.42)));
   const lineCount = Math.max(1, Math.ceil(textLength / charsPerLine));
   const lineHeightPx = rootFontSizePx * 0.78;
@@ -218,7 +219,7 @@ function applyRandomizedAnnotations() {
   }
 
   const rootFontSizePx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-  const annotationTexts = pickRandomUnique(LYRIC_STYLE_ANNOTATIONS, doodles.length).map((annotation) =>
+  const annotationTexts = pickRandomUnique(FORTUNE_STYLE_ANNOTATIONS, doodles.length).map((annotation) =>
     trimAnnotation(annotation)
   );
   const occupiedRects = [];
@@ -227,7 +228,7 @@ function applyRandomizedAnnotations() {
     const textElement = doodle.querySelector(".doodle__text");
     const zone = DOODLE_ZONES[index % DOODLE_ZONES.length];
     const annotationText =
-      annotationTexts[index] || trimAnnotation(LYRIC_STYLE_ANNOTATIONS[index % LYRIC_STYLE_ANNOTATIONS.length]);
+      annotationTexts[index] || trimAnnotation(FORTUNE_STYLE_ANNOTATIONS[index % FORTUNE_STYLE_ANNOTATIONS.length]);
 
     if (textElement) {
       textElement.textContent = annotationText;
