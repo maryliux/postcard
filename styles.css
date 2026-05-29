@@ -133,7 +133,7 @@ body {
 }
 
 .preloader__card::before {
-  background: #ffffff url("front1.png") center / cover no-repeat;
+  background: #ffffff url("frontcard.png") center / cover no-repeat;
 }
 
 .preloader__card::after {
