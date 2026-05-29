@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Postcard of Fate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Beth+Ellen&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="fate-postcard.css" />
+  </head>
+  <body>
+    <a class="creator__back" href="index.html" aria-label="Back to landing page">←</a>
+
+    <main class="creator">
+      <button
+        class="creator__postcard"
+        id="creatorPostcard"
+        type="button"
+        aria-label="Upload your own postcard image"
+      >
+        <img id="creatorImage" src="frontcard.png" alt="Your postcard image" draggable="false" />
+        <span class="creator__upload-dot" aria-hidden="true">+</span>
+        <span class="creator__fortune" id="creatorFortune"></span>
+      </button>
+
+      <input
+        id="creatorUploadInput"
+        type="file"
+        accept=".png,.jpg,.jpeg,.heic,.heif,image/png,image/jpeg,image/heic,image/heif"
+        hidden
+      />
+    </main>
+
+    <script src="fate-postcard.js"></script>
+  </body>
+</html>
