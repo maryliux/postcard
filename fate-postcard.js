@@ -14,10 +14,12 @@ const decorateToggleButton = document.querySelector("#decorateToggleButton");
 const sheetStickers = Array.from(document.querySelectorAll(".creator__sheet-grid .creator__sticker"));
 const actionBars = Array.from(document.querySelectorAll("[data-actions-bar]"));
 const undoButtons = Array.from(document.querySelectorAll('[data-action="undo"]'));
-const saveButtons = Array.from(document.querySelectorAll('[data-action="save"]'));
+const saveLayoutButtons = Array.from(document.querySelectorAll('[data-action="save-layout"]'));
+const downloadPostcardButton = document.querySelector("#downloadPostcardButton");
 const fortuneSlotCount = 3;
 
 const UPLOAD_STORAGE_KEY = "uploadedPostcardFrontImage";
+const STICKER_LAYOUT_STORAGE_KEY = "savedPostcardStickerLayout";
 const BASE_PITCH = 8;
 const BASE_ROLL = -5;
 const FRONT_YAW = -12;
@@ -172,6 +174,44 @@ function getUploadedFrontImage() {
     return window.sessionStorage.getItem(UPLOAD_STORAGE_KEY);
   } catch (error) {
     return null;
+  }
+}
+
+function getStoredStickerLayout() {
+  try {
+    const rawValue = window.sessionStorage.getItem(STICKER_LAYOUT_STORAGE_KEY);
+    if (!rawValue) {
+      return [];
+    }
+
+    const parsed = JSON.parse(rawValue);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .filter((placement) => placement && typeof placement === "object")
+      .map((placement, index) => ({
+        id: Number.isFinite(placement.id) ? placement.id : index,
+        type: placement.type === "image" ? "image" : "emoji",
+        symbol: typeof placement.symbol === "string" ? placement.symbol : "★",
+        imageSrc: typeof placement.imageSrc === "string" ? placement.imageSrc : null,
+        x: clamp(Number(placement.x), 0.02, 0.98),
+        y: clamp(Number(placement.y), 0.02, 0.98),
+        rotation: Number.isFinite(placement.rotation) ? placement.rotation : 0,
+        scale: Number.isFinite(placement.scale) ? placement.scale : 1,
+      }));
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveStickerLayoutToSession() {
+  try {
+    window.sessionStorage.setItem(STICKER_LAYOUT_STORAGE_KEY, JSON.stringify(stickerPlacements));
+    return true;
+  } catch (error) {
+    return false;
   }
 }
 
@@ -611,6 +651,23 @@ function onUndoStickersClick() {
   setActionsVisible(stickerPlacements.length > 0);
 }
 
+function onSaveLayoutClick(event) {
+  const didSave = saveStickerLayoutToSession();
+  const button = event.currentTarget;
+  if (!button || !(button instanceof HTMLButtonElement)) {
+    return;
+  }
+
+  if (!button.dataset.originalLabel) {
+    button.dataset.originalLabel = button.textContent || "save";
+  }
+
+  button.textContent = didSave ? "saved!" : "retry";
+  window.setTimeout(() => {
+    button.textContent = button.dataset.originalLabel || "save";
+  }, 880);
+}
+
 async function onSaveStickersClick() {
   const frontImageSrc = creatorFrontImage3d?.src || creatorFrontImage2d?.src;
   const backImageSrc = "backcard.png";
@@ -721,9 +778,13 @@ undoButtons.forEach((button) => {
   button.addEventListener("click", onUndoStickersClick);
 });
 
-saveButtons.forEach((button) => {
-  button.addEventListener("click", onSaveStickersClick);
+saveLayoutButtons.forEach((button) => {
+  button.addEventListener("click", onSaveLayoutClick);
 });
+
+if (downloadPostcardButton) {
+  downloadPostcardButton.addEventListener("click", onSaveStickersClick);
+}
 
 if (creatorPostcardInner) {
   creatorPostcardInner.style.transition = "none";
@@ -731,8 +792,11 @@ if (creatorPostcardInner) {
 
 applyFrontImage();
 setRandomFortunes();
+stickerPlacements = getStoredStickerLayout();
+const maxPlacementId = stickerPlacements.reduce((maxId, placement) => Math.max(maxId, placement.id), -1);
+stickerIdCounter = maxPlacementId + 1;
 renderPlacedStickers();
-setActionsVisible(false);
+setActionsVisible(stickerPlacements.length > 0);
 commitFaceState(false);
 setMode("3d");
 setDecorateSheetsOpen(false);
