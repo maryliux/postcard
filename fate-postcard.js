@@ -147,7 +147,7 @@ function renderPlacedStickers() {
         node.textContent = placement.symbol;
       }
       const sideScaleCompensation = compensatePerspective
-        ? clamp(1.35 - placement.x * 1.05, 0.28, 1.45)
+        ? clamp(0.98 - placement.x * 0.63, 0.3, 1.0)
         : 1;
       const finalScale = placement.scale * sideScaleCompensation;
       node.style.left = `${(placement.x * 100).toFixed(2)}%`;
