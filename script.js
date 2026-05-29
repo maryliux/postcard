@@ -83,6 +83,22 @@ const DOODLE_ZONES = [
     rotationRange: [-9, 4],
     widthRange: [7.9, 10.8],
   },
+  {
+    horizontalProp: "left",
+    horizontalRange: [-50, -34],
+    verticalProp: "top",
+    verticalRange: [2, 20],
+    rotationRange: [-14, -3],
+    widthRange: [8.3, 11.5],
+  },
+  {
+    horizontalProp: "right",
+    horizontalRange: [-42, -26],
+    verticalProp: "bottom",
+    verticalRange: [2, 16],
+    rotationRange: [4, 14],
+    widthRange: [8.4, 11.8],
+  },
 ];
 
 function clamp(value, min, max) {
