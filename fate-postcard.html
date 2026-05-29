@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Postcard of Fate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Beth+Ellen&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="fate-postcard.css" />
+  </head>
+  <body>
+    <main class="creator">
+      <div class="creator__top-bar">
+        <a class="creator__back-button" href="index.html" aria-label="Back to landing page">← back</a>
+        <div class="creator__controls">
+          <div class="creator__view-toggle" role="group" aria-label="Card display mode">
+            <button class="creator__mode-button is-active" id="mode3dButton" type="button" aria-pressed="true">
+              3d card
+            </button>
+            <button class="creator__mode-button" id="mode2dButton" type="button" aria-pressed="false">
+              2d card
+            </button>
+          </div>
+          <div class="creator__decorate-wrap">
+            <button
+              class="creator__mode-button creator__decorate-button"
+              id="decorateToggleButton"
+              type="button"
+              aria-pressed="false"
+            >
+              decorate?
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="creator__sticker-sheet creator__sticker-sheet--right" aria-hidden="true">
+        <p class="creator__sheet-title">sticker sheet</p>
+        <div class="creator__sheet-grid">
+          <span
+            class="creator__sticker creator__sticker--custom-image"
+            data-sticker-image-src="sticker2.png"
+            data-sticker-fallback="★"
+            aria-label="custom sticker"
+          >
+            <img class="creator__sticker-image" src="sticker2.png" alt="" draggable="false" />
+            <span class="creator__sticker-fallback">★</span>
+          </span>
+          <span class="creator__sticker" data-sticker-image-src="sticker1.png" data-sticker-fallback="✿">
+            <img class="creator__sticker-image" src="sticker1.png" alt="" draggable="false" />
+            <span class="creator__sticker-fallback">✿</span>
+          </span>
+          <span class="creator__sticker" data-sticker-image-src="s5.svg" data-sticker-fallback="✦">
+            <img class="creator__sticker-image" src="s5.svg" alt="" draggable="false" />
+            <span class="creator__sticker-fallback">✦</span>
+          </span>
+          <span class="creator__sticker" data-sticker-image-src="s6.svg" data-sticker-fallback="✧">
+            <img class="creator__sticker-image" src="s6.svg" alt="" draggable="false" />
+            <span class="creator__sticker-fallback">✧</span>
+          </span>
+          <span class="creator__sticker" data-sticker-image-src="s7.svg" data-sticker-fallback="★">
+            <img class="creator__sticker-image" src="s7.svg" alt="" draggable="false" />
+            <span class="creator__sticker-fallback">★</span>
+          </span>
+          <span class="creator__sticker" data-sticker-image-src="s4.svg" data-sticker-fallback="❀">
+            <img class="creator__sticker-image" src="s4.svg" alt="" draggable="false" />
+            <span class="creator__sticker-fallback">❀</span>
+          </span>
+        </div>
+      </aside>
+
+      <section class="creator__view creator__view--3d" id="creatorView3d">
+        <div class="creator__postcard-wrap">
+          <button
+            class="creator__postcard"
+            id="creatorPostcard"
+            type="button"
+            aria-label="Interactive postcard. Drag in any direction or click to flip."
+          >
+            <div class="creator__postcard-inner" id="creatorPostcardInner">
+              <figure class="creator__face creator__face--front" id="creatorFrontDrop3d">
+                <img id="creatorFrontImage3d" src="frontcard.png" alt="Your uploaded postcard front" />
+                <div class="creator__sticker-overlay" id="creatorStickerOverlay3d" aria-hidden="true"></div>
+                <div class="creator__fortune-overlay" aria-hidden="true">
+                  <p class="creator__fortune-line creator__fortune-line--1" data-fortune-slot="1"></p>
+                  <p class="creator__fortune-line creator__fortune-line--2" data-fortune-slot="2"></p>
+                  <p class="creator__fortune-line creator__fortune-line--3" data-fortune-slot="3"></p>
+                </div>
+              </figure>
+              <figure class="creator__face creator__face--back">
+                <img src="backcard.png" alt="Postcard back" />
+              </figure>
+            </div>
+          </button>
+        </div>
+        <section class="creator__actions" data-actions-bar hidden>
+          <button class="creator__action-button" data-action="undo" type="button">
+            undo
+          </button>
+          <button
+            class="creator__action-button creator__action-button--save"
+            data-action="save-layout"
+            type="button"
+          >
+            save
+          </button>
+        </section>
+      </section>
+
+      <section class="creator__view creator__view--2d" id="creatorView2d" hidden>
+        <figure class="creator__flat-card creator__flat-card--front" id="creatorFrontDrop2d">
+          <img id="creatorFrontImage2d" src="frontcard.png" alt="Your uploaded postcard front" />
+          <div class="creator__sticker-overlay" id="creatorStickerOverlay2d" aria-hidden="true"></div>
+          <div class="creator__fortune-overlay" aria-hidden="true">
+            <p class="creator__fortune-line creator__fortune-line--1" data-fortune-slot="1"></p>
+            <p class="creator__fortune-line creator__fortune-line--2" data-fortune-slot="2"></p>
+            <p class="creator__fortune-line creator__fortune-line--3" data-fortune-slot="3"></p>
+          </div>
+        </figure>
+        <figure class="creator__flat-card">
+          <img src="backcard.png" alt="Postcard back" />
+        </figure>
+        <section class="creator__actions" data-actions-bar hidden>
+          <button class="creator__action-button" data-action="undo" type="button">
+            undo
+          </button>
+          <button
+            class="creator__action-button creator__action-button--save"
+            data-action="save-layout"
+            type="button"
+          >
+            save
+          </button>
+        </section>
+      </section>
+
+      <button
+        class="creator__save-fixed creator__action-button creator__action-button--save"
+        id="downloadPostcardButton"
+        type="button"
+      >
+        save postcard
+      </button>
+    </main>
+
+    <script src="fate-postcard.js"></script>
+  </body>
+</html>

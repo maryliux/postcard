@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Postcard Landing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Beth+Ellen&family=Permanent+Marker&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="preloader" id="preloader" aria-hidden="true">
+      <img class="preloader__stamp" src="stamp.png" alt="Loading stamp" />
+    </div>
+
+    <main class="scene">
+      <div class="scene__top">
+        <p class="scene__quote">
+          as humans, do we feel entitled to know what happens to us? while we live, when we die,
+          what meal will we eat next? it's a beautiful, wonderful, and funny [not so] little thing
+          to conceptualize
+        </p>
+      </div>
+
+      <section class="postcard-wrap">
+        <button
+          class="postcard"
+          id="postcard"
+          type="button"
+          aria-label="Interactive postcard. Drag in any direction or click to flip."
+        >
+          <div class="postcard__inner" id="postcardInner">
+            <figure class="postcard__face postcard__face--front">
+              <img src="frontcard.png" alt="Postcard front" draggable="false" />
+              <div class="postcard__doodles" aria-hidden="true">
+                <div class="doodle doodle--1">
+                  <span class="doodle__text">diva since birth</span>
+                </div>
+                <div class="doodle doodle--2">
+                  <span class="doodle__text">lots of kids... lots of them...</span>
+                </div>
+              </div>
+            </figure>
+            <figure class="postcard__face postcard__face--back">
+              <img src="backcard.png" alt="Postcard back" draggable="false" />
+            </figure>
+          </div>
+        </button>
+      </section>
+
+      <div class="scene__bottom">
+        <p class="scene__tagline">your fate teller</p>
+        <button class="scene__fate-button" id="sceneFateButton" type="button">
+          what's your postcard of fate?
+        </button>
+        <input
+          id="postcardUploadInput"
+          type="file"
+          accept=".png,.jpg,.jpeg,.heic,.heif,image/png,image/jpeg,image/heic,image/heif"
+          hidden
+        />
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
