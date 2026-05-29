@@ -35,7 +35,7 @@
         >
           <div class="postcard__inner" id="postcardInner">
             <figure class="postcard__face postcard__face--front">
-              <img src="frontcard.png" alt="Postcard front" draggable="false" />
+              <img id="postcardFrontImage" src="frontcard.png" alt="Postcard front" draggable="false" />
               <div class="postcard__doodles" aria-hidden="true">
                 <div class="doodle doodle--1">
                   <span class="doodle__text">diva since birth</span>
@@ -54,7 +54,15 @@
 
       <div class="scene__bottom">
         <p class="scene__tagline">your fate teller</p>
-        <button class="scene__fate-button" type="button">what's your postcard of fate?</button>
+        <button class="scene__fate-button" id="sceneFateButton" type="button">
+          what's your postcard of fate?
+        </button>
+        <input
+          id="postcardUploadInput"
+          type="file"
+          accept=".png,.jpg,.jpeg,.heic,.heif,image/png,image/jpeg,image/heic,image/heif"
+          hidden
+        />
       </div>
     </main>
 
