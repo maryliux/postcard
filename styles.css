@@ -12,6 +12,106 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #2f2f2f;
   background: #f4f3ed;
+  overflow-x: hidden;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #f4f3ed;
+  z-index: 20;
+  transition: opacity 420ms ease, visibility 420ms ease;
+}
+
+.preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.preloader__envelope {
+  position: relative;
+  width: clamp(10.5rem, 28vw, 18rem);
+  aspect-ratio: 6 / 4.2;
+  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.13));
+}
+
+.preloader__body {
+  position: absolute;
+  inset: auto 0 0;
+  height: 57%;
+  background: #f7f6f3;
+  border: 1px solid rgba(186, 182, 172, 0.74);
+  z-index: 3;
+}
+
+.preloader__body::before,
+.preloader__body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #fcfbf8;
+  border-top: 1px solid rgba(186, 182, 172, 0.64);
+}
+
+.preloader__body::before {
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.preloader__body::after {
+  right: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.preloader__flap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 64%;
+  background: #fdfcf9;
+  border: 1px solid rgba(186, 182, 172, 0.62);
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+  transform-origin: center bottom;
+  animation: preloader-flap-open 900ms ease-out 180ms both;
+  z-index: 4;
+}
+
+.preloader__card {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  width: 58%;
+  aspect-ratio: 3 / 2;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(25, 25, 25, 0.1);
+  background: #ffffff url("front1.png") center / cover no-repeat;
+  transform: translate(-50%, 46%);
+  animation: preloader-card-rise 1800ms cubic-bezier(0.24, 0.7, 0.25, 1) 260ms forwards;
+  z-index: 2;
+}
+
+@keyframes preloader-flap-open {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(60deg);
+  }
+}
+
+@keyframes preloader-card-rise {
+  0% {
+    transform: translate(-50%, 52%) rotate(-2deg);
+  }
+  55% {
+    transform: translate(-50%, -8%) rotate(-2deg);
+  }
+  100% {
+    transform: translate(-50%, -24%) rotate(-3deg);
+  }
 }
 
 .scene {
@@ -24,6 +124,14 @@ body {
   row-gap: clamp(0.8rem, 2.2vw, 1.8rem);
   text-align: center;
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+body.is-ready .scene {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .scene__top {
@@ -111,41 +219,17 @@ body {
 
 .doodle {
   position: absolute;
-  max-width: clamp(7rem, 19vw, 12.4rem);
+  max-width: clamp(7.8rem, 22vw, 13.8rem);
 }
 
 .doodle__text {
   font-family: "Beth Ellen", "Brush Script MT", "Segoe Script", cursive;
-  font-size: clamp(0.5rem, 0.95vw, 0.68rem);
+  font-size: clamp(0.5rem, 0.86vw, 0.64rem);
   line-height: 1.1;
   white-space: normal;
   letter-spacing: 0.01em;
   color: #b22a35;
   display: inline-block;
-  text-align: left;
-}
-
-.doodle--3 {
-  top: -14%;
-  right: -35%;
-  transform: rotate(-8deg);
-}
-
-.doodle--1 {
-  top: 18%;
-  right: -34%;
-  transform: rotate(-3deg);
-}
-
-.doodle--2 {
-  left: -44%;
-  bottom: 8%;
-  transform: rotate(9deg);
-}
-
-.doodle--2 .doodle__text {
-  max-width: 7.4rem;
-  line-height: 1.08;
   text-align: left;
 }
 
@@ -235,20 +319,5 @@ body {
 
   .doodle__text {
     font-size: 0.44rem;
-  }
-
-  .doodle--1 {
-    right: -28%;
-    top: 17%;
-  }
-
-  .doodle--2 {
-    left: -36%;
-    bottom: 10%;
-  }
-
-  .doodle--3 {
-    right: -30%;
-    top: -11%;
   }
 }

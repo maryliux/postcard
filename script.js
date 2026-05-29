@@ -1,6 +1,8 @@
 const postcard = document.querySelector("#postcard");
 const postcardInner = document.querySelector("#postcardInner");
 const doodles = Array.from(document.querySelectorAll(".postcard__doodles .doodle"));
+const doodleLayer = document.querySelector(".postcard__doodles");
+const preloader = document.querySelector("#preloader");
 
 let isDragging = false;
 let moved = false;
@@ -21,6 +23,7 @@ let lastPointerX = 0;
 let lastPointerTime = 0;
 let pointerVelocityX = 0;
 let animationFrameId = null;
+let resizeDebounceId = null;
 
 const BASE_PITCH = 8;
 const BASE_ROLL = -5;
@@ -36,68 +39,78 @@ const DRAG_LERP = 0.34;
 const SETTLE_LERP = 0.18;
 const INERTIA_MULTIPLIER = 120;
 const STOP_EPSILON = 0.03;
+const MAX_ANNOTATION_CHARS = 50;
+const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 550 : 2400;
 const LYRIC_STYLE_ANNOTATIONS = [
-  "from the moment i saw you, i started rewriting my future in glitter pen.",
-  "i keep dancing like the world is ending and somehow it keeps saving me.",
-  "if loving you is a bad idea, then let this song be my alibi tonight.",
-  "i wore my heart like eyeliner and hoped the night would understand me.",
-  "somewhere between midnight and sunrise, i decided i belong to the stars.",
-  "every room gets louder when i laugh, softer when i leave, and i love that.",
-  "they called it chaos but i called it choreography for my comeback season.",
-  "i fall in love with moments first, people second, and memories forever.",
-  "my dreams are too bright for closed curtains and too wild for quiet endings.",
-  "i write your name in the margins like a chorus i cannot stop humming.",
-  "we were never subtle, we were fireworks pretending to be candlelight.",
-  "if fate is listening, tell her i want the dramatic version of everything.",
-  "i keep a pocket full of wishes and spend them all before the morning comes.",
-  "some hearts break, mine remixes the pain and turns it into a dance track.",
-  "i was made for beautiful trouble and a future that sparkles a little too loud.",
-  "if this is a love song, let it be the one people scream in the car at 2am.",
-  "i choose wonder every time, even when the ending is uncertain and electric.",
-  "tell destiny i am late because i stopped to romanticize the entire night sky.",
-  "i learned to survive softly, loudly, and with perfect timing in high heels.",
-  "we were always a little legendary, just waiting for the right lighting.",
+  "from the moment i saw you i stayed for every storm after.",
+  "i keep dancing like the sky owes me one more miracle.",
+  "if fate is late i'll wait with lipstick and loud music.",
+  "i wear my heart like eyeliner sharp and impossible.",
+  "somewhere between midnight and sunrise i chose myself.",
+  "they called it chaos but i called it choreography.",
+  "i fall in love with moments then frame them in song.",
+  "my dreams are too bright for quiet endings.",
+  "i write your name in the margins of every chorus.",
+  "we were fireworks pretending to be candlelight.",
+  "i keep a pocket full of wishes and wild plans.",
+  "some hearts break mine remixes the pain.",
+  "i was made for beautiful trouble and neon hope.",
+  "if this is a love song turn it all the way up.",
+  "i choose wonder every time even in the dark.",
+  "tell destiny i'm late i stopped for the moon.",
+  "i learned to survive loudly and look good doing it.",
+  "we were always a little legendary in poor lighting.",
+  "my soft heart still bites when the moment calls.",
+  "every goodbye i write becomes a better verse.",
+  "the city sleeps but my longing stays awake.",
+  "i carry sparkles and sorrow in the same bag.",
+  "you kissed me once and the room changed color.",
+  "i trust the music more than i trust the map.",
+  "all my best decisions started with one bad idea.",
+  "the future keeps calling me by my stage name.",
+  "i make room for joy even when it arrives messy.",
 ];
 const DOODLE_ZONES = [
   {
     horizontalProp: "right",
-    horizontalRange: [-44, -30],
+    horizontalRange: [-45, -32],
     verticalProp: "top",
-    verticalRange: [6, 24],
-    rotationRange: [-12, -2],
-    widthRange: [8.1, 11.2],
+    verticalRange: [6, 19],
+    rotationRange: [-12, -3],
+    widthRange: [8.7, 11.4],
   },
   {
     horizontalProp: "left",
-    horizontalRange: [-53, -37],
-    verticalProp: "bottom",
-    verticalRange: [4, 18],
-    rotationRange: [5, 14],
-    widthRange: [8.7, 12.2],
+    horizontalRange: [-54, -40],
+    verticalProp: "top",
+    verticalRange: [9, 24],
+    rotationRange: [4, 13],
+    widthRange: [8.8, 11.6],
   },
   {
     horizontalProp: "right",
-    horizontalRange: [-43, -28],
+    horizontalRange: [-42, -28],
     verticalProp: "top",
-    verticalRange: [-18, -4],
-    rotationRange: [-9, 4],
-    widthRange: [7.9, 10.8],
+    verticalRange: [-20, -7],
+    rotationRange: [-10, -2],
+    widthRange: [8, 10.8],
   },
   {
     horizontalProp: "left",
-    horizontalRange: [-50, -34],
-    verticalProp: "top",
-    verticalRange: [2, 20],
-    rotationRange: [-14, -3],
-    widthRange: [8.3, 11.5],
+    horizontalRange: [-52, -38],
+    verticalProp: "bottom",
+    verticalRange: [6, 20],
+    rotationRange: [-8, 4],
+    widthRange: [8.6, 11.3],
   },
   {
     horizontalProp: "right",
-    horizontalRange: [-42, -26],
+    horizontalRange: [-40, -26],
     verticalProp: "bottom",
-    verticalRange: [2, 16],
+    verticalRange: [4, 16],
     rotationRange: [4, 14],
-    widthRange: [8.4, 11.8],
+    widthRange: [8.4, 11.2],
   },
 ];
 
@@ -121,17 +134,100 @@ function pickRandomUnique(items, count) {
   return chosen;
 }
 
+function trimAnnotation(text, maxChars = MAX_ANNOTATION_CHARS) {
+  const normalized = text.trim().replace(/\s+/g, " ");
+  if (normalized.length <= maxChars) {
+    return normalized;
+  }
+
+  const shortened = normalized.slice(0, maxChars - 3).trimEnd();
+  return `${shortened}...`;
+}
+
+function rectsOverlap(a, b, padding = 10) {
+  return !(
+    a.x + a.width + padding < b.x ||
+    b.x + b.width + padding < a.x ||
+    a.y + a.height + padding < b.y ||
+    b.y + b.height + padding < a.y
+  );
+}
+
+function estimateRectForCandidate(candidate, zone, textLength, containerRect, rootFontSizePx) {
+  const widthPx = candidate.widthRem * rootFontSizePx;
+  const charsPerLine = Math.max(15, Math.floor(widthPx / (rootFontSizePx * 0.42)));
+  const lineCount = Math.max(1, Math.ceil(textLength / charsPerLine));
+  const lineHeightPx = rootFontSizePx * 0.78;
+  const heightPx = lineCount * lineHeightPx + rootFontSizePx * 0.38;
+
+  let x;
+  let y;
+
+  if (zone.horizontalProp === "left") {
+    x = containerRect.width * (candidate.horizontalPercent / 100);
+  } else {
+    x = containerRect.width - containerRect.width * (candidate.horizontalPercent / 100) - widthPx;
+  }
+
+  if (zone.verticalProp === "top") {
+    y = containerRect.height * (candidate.verticalPercent / 100);
+  } else {
+    y = containerRect.height - containerRect.height * (candidate.verticalPercent / 100) - heightPx;
+  }
+
+  return {
+    x,
+    y,
+    width: widthPx,
+    height: heightPx,
+  };
+}
+
+function buildPlacementCandidate(zone, textLength, containerRect, rootFontSizePx) {
+  const candidate = {
+    horizontalPercent: randomInRange(zone.horizontalRange[0], zone.horizontalRange[1]),
+    verticalPercent: randomInRange(zone.verticalRange[0], zone.verticalRange[1]),
+    rotationDeg: randomInRange(zone.rotationRange[0], zone.rotationRange[1]),
+    widthRem: randomInRange(zone.widthRange[0], zone.widthRange[1]),
+  };
+
+  candidate.rect = estimateRectForCandidate(candidate, zone, textLength, containerRect, rootFontSizePx);
+  return candidate;
+}
+
+function buildFallbackCandidate(zone, textLength, containerRect, rootFontSizePx) {
+  const candidate = {
+    horizontalPercent: (zone.horizontalRange[0] + zone.horizontalRange[1]) / 2,
+    verticalPercent: (zone.verticalRange[0] + zone.verticalRange[1]) / 2,
+    rotationDeg: (zone.rotationRange[0] + zone.rotationRange[1]) / 2,
+    widthRem: (zone.widthRange[0] + zone.widthRange[1]) / 2,
+  };
+
+  candidate.rect = estimateRectForCandidate(candidate, zone, textLength, containerRect, rootFontSizePx);
+  return candidate;
+}
+
 function applyRandomizedAnnotations() {
-  if (doodles.length === 0) {
+  if (doodles.length === 0 || !doodleLayer) {
     return;
   }
 
-  const annotationTexts = pickRandomUnique(LYRIC_STYLE_ANNOTATIONS, doodles.length);
+  const containerRect = doodleLayer.getBoundingClientRect();
+  if (containerRect.width < 1 || containerRect.height < 1) {
+    return;
+  }
+
+  const rootFontSizePx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const annotationTexts = pickRandomUnique(LYRIC_STYLE_ANNOTATIONS, doodles.length).map((annotation) =>
+    trimAnnotation(annotation)
+  );
+  const occupiedRects = [];
 
   doodles.forEach((doodle, index) => {
     const textElement = doodle.querySelector(".doodle__text");
     const zone = DOODLE_ZONES[index % DOODLE_ZONES.length];
-    const annotationText = annotationTexts[index] || LYRIC_STYLE_ANNOTATIONS[index % LYRIC_STYLE_ANNOTATIONS.length];
+    const annotationText =
+      annotationTexts[index] || trimAnnotation(LYRIC_STYLE_ANNOTATIONS[index % LYRIC_STYLE_ANNOTATIONS.length]);
 
     if (textElement) {
       textElement.textContent = annotationText;
@@ -142,15 +238,25 @@ function applyRandomizedAnnotations() {
     doodle.style.top = "";
     doodle.style.bottom = "";
 
-    const horizontalValue = randomInRange(zone.horizontalRange[0], zone.horizontalRange[1]).toFixed(1);
-    const verticalValue = randomInRange(zone.verticalRange[0], zone.verticalRange[1]).toFixed(1);
-    const rotationValue = randomInRange(zone.rotationRange[0], zone.rotationRange[1]).toFixed(1);
-    const widthValue = randomInRange(zone.widthRange[0], zone.widthRange[1]).toFixed(2);
+    let candidate = null;
+    for (let attempt = 0; attempt < 35; attempt += 1) {
+      const nextCandidate = buildPlacementCandidate(zone, annotationText.length, containerRect, rootFontSizePx);
+      const hasCollision = occupiedRects.some((rect) => rectsOverlap(nextCandidate.rect, rect));
+      if (!hasCollision) {
+        candidate = nextCandidate;
+        break;
+      }
+    }
 
-    doodle.style[zone.horizontalProp] = `${horizontalValue}%`;
-    doodle.style[zone.verticalProp] = `${verticalValue}%`;
-    doodle.style.transform = `rotate(${rotationValue}deg)`;
-    doodle.style.maxWidth = `${widthValue}rem`;
+    if (!candidate) {
+      candidate = buildFallbackCandidate(zone, annotationText.length, containerRect, rootFontSizePx);
+    }
+
+    doodle.style[zone.horizontalProp] = `${candidate.horizontalPercent.toFixed(1)}%`;
+    doodle.style[zone.verticalProp] = `${candidate.verticalPercent.toFixed(1)}%`;
+    doodle.style.transform = `rotate(${candidate.rotationDeg.toFixed(1)}deg)`;
+    doodle.style.maxWidth = `${candidate.widthRem.toFixed(2)}rem`;
+    occupiedRects.push(candidate.rect);
   });
 }
 
@@ -308,12 +414,36 @@ function onKeyDown(event) {
   commitFaceState(!showingBack);
 }
 
+function finishPreloader() {
+  document.body.classList.add("is-ready");
+  if (!preloader) {
+    return;
+  }
+
+  preloader.classList.add("is-hidden");
+  window.setTimeout(() => {
+    preloader.remove();
+  }, 500);
+}
+
 postcard.addEventListener("pointerdown", onPointerDown);
 postcard.addEventListener("pointermove", onPointerMove);
 postcard.addEventListener("pointerup", onPointerUp);
 postcard.addEventListener("pointercancel", onPointerCancel);
 postcard.addEventListener("keydown", onKeyDown);
+window.addEventListener("resize", () => {
+  window.clearTimeout(resizeDebounceId);
+  resizeDebounceId = window.setTimeout(() => {
+    applyRandomizedAnnotations();
+  }, 130);
+});
 
 postcardInner.style.transition = "none";
 applyRandomizedAnnotations();
 commitFaceState(false);
+
+if (preloader) {
+  window.setTimeout(finishPreloader, PRELOADER_DURATION_MS);
+} else {
+  finishPreloader();
+}
