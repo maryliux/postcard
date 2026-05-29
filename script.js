@@ -43,7 +43,6 @@ const STOP_EPSILON = 0.03;
 const MAX_ANNOTATION_CHARS = 50;
 const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 380 : 3250;
-const ARROW_SPACE_REM = 1.35;
 const FORTUNE_STYLE_ANNOTATIONS = [
   "your luck changes after the next full moon.",
   "someone from your past will text this week.",
@@ -75,36 +74,20 @@ const FORTUNE_STYLE_ANNOTATIONS = [
 ];
 const DOODLE_ZONES = [
   {
-    horizontalProp: "right",
-    horizontalRange: [-45, -32],
+    horizontalProp: "left",
+    horizontalRange: [36, 50],
     verticalProp: "top",
-    verticalRange: [6, 19],
-    rotationRange: [-12, -3],
-    widthRange: [8.7, 11.4],
+    verticalRange: [10, 22],
+    rotationRange: [-12, -4],
+    widthRange: [10.4, 13.6],
   },
   {
     horizontalProp: "left",
-    horizontalRange: [-54, -40],
+    horizontalRange: [8, 20],
     verticalProp: "top",
-    verticalRange: [9, 24],
-    rotationRange: [4, 13],
-    widthRange: [8.8, 11.6],
-  },
-  {
-    horizontalProp: "right",
-    horizontalRange: [-42, -28],
-    verticalProp: "top",
-    verticalRange: [-20, -7],
-    rotationRange: [-10, -2],
-    widthRange: [8, 10.8],
-  },
-  {
-    horizontalProp: "left",
-    horizontalRange: [-52, -38],
-    verticalProp: "bottom",
-    verticalRange: [6, 20],
-    rotationRange: [-8, 4],
-    widthRange: [8.6, 11.3],
+    verticalRange: [52, 66],
+    rotationRange: [-6, 6],
+    widthRange: [11, 14.2],
   },
 ];
 
@@ -148,8 +131,8 @@ function rectsOverlap(a, b, padding = 10) {
 }
 
 function estimateRectForCandidate(candidate, zone, textLength, containerRect, rootFontSizePx) {
-  const widthPx = candidate.widthRem * rootFontSizePx + ARROW_SPACE_REM * rootFontSizePx;
-  const charsPerLine = Math.max(15, Math.floor(widthPx / (rootFontSizePx * 0.42)));
+  const widthPx = candidate.widthRem * rootFontSizePx;
+  const charsPerLine = Math.max(15, Math.floor(widthPx / (rootFontSizePx * 0.5)));
   const lineCount = Math.max(1, Math.ceil(textLength / charsPerLine));
   const lineHeightPx = rootFontSizePx * 0.78;
   const heightPx = lineCount * lineHeightPx + rootFontSizePx * 0.38;

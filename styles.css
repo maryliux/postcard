@@ -267,39 +267,19 @@ body.is-ready .scene {
 
 .doodle {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 0.26rem;
-  max-width: clamp(7.8rem, 22vw, 13.8rem);
-}
-
-.doodle__arrow {
-  --arrow-flip: 1;
-  width: clamp(0.62rem, 1.25vw, 0.86rem);
-  height: auto;
-  flex: 0 0 auto;
-  opacity: 0.94;
-  transform: scaleX(var(--arrow-flip)) scaleY(0.62);
-  transform-origin: center;
-}
-
-.doodle--right .doodle__arrow {
-  --arrow-flip: -1;
-}
-
-.doodle--left {
-  flex-direction: row-reverse;
+  max-width: clamp(8.4rem, 24vw, 14.8rem);
 }
 
 .doodle__text {
   font-family: "Permanent Marker", "Marker Felt", "Bradley Hand", cursive;
-  font-size: clamp(0.5rem, 0.86vw, 0.64rem);
-  line-height: 1.1;
+  font-size: clamp(0.76rem, 1.45vw, 1.22rem);
+  line-height: 1.02;
   white-space: normal;
   letter-spacing: 0.01em;
-  color: #b22a35;
+  color: #b22833;
   display: inline-block;
   text-align: left;
+  text-shadow: 0 0.3px 0 rgba(130, 20, 30, 0.35);
 }
 
 .postcard__face--back {
@@ -387,10 +367,6 @@ body.is-ready .scene {
   }
 
   .doodle__text {
-    font-size: 0.44rem;
-  }
-
-  .doodle__arrow {
-    width: 0.58rem;
+    font-size: 0.72rem;
   }
 }
