@@ -24,6 +24,7 @@ let lastPointerTime = 0;
 let pointerVelocityX = 0;
 let animationFrameId = null;
 let resizeDebounceId = null;
+let preloaderFinished = false;
 
 const BASE_PITCH = 8;
 const BASE_ROLL = -5;
@@ -41,7 +42,7 @@ const INERTIA_MULTIPLIER = 120;
 const STOP_EPSILON = 0.03;
 const MAX_ANNOTATION_CHARS = 50;
 const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 420 : 1550;
+const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 380 : 3250;
 const ARROW_SPACE_REM = 1.35;
 const FORTUNE_STYLE_ANNOTATIONS = [
   "your luck changes after the next full moon.",
@@ -408,6 +409,11 @@ function onKeyDown(event) {
 }
 
 function finishPreloader() {
+  if (preloaderFinished) {
+    return;
+  }
+
+  preloaderFinished = true;
   document.body.classList.add("is-ready");
   if (!preloader) {
     return;
@@ -417,6 +423,26 @@ function finishPreloader() {
   window.setTimeout(() => {
     preloader.remove();
   }, 500);
+}
+
+function runPreloaderSequence() {
+  if (!preloader) {
+    finishPreloader();
+    return;
+  }
+
+  if (PREFERS_REDUCED_MOTION) {
+    window.setTimeout(finishPreloader, PRELOADER_DURATION_MS);
+    return;
+  }
+
+  const sequenceCard = preloader.querySelector(".preloader__card");
+  if (sequenceCard) {
+    sequenceCard.addEventListener("animationend", finishPreloader, { once: true });
+  }
+
+  // Safety timeout in case animation event does not fire.
+  window.setTimeout(finishPreloader, PRELOADER_DURATION_MS);
 }
 
 postcard.addEventListener("pointerdown", onPointerDown);
@@ -435,8 +461,4 @@ postcardInner.style.transition = "none";
 applyRandomizedAnnotations();
 commitFaceState(false);
 
-if (preloader) {
-  window.setTimeout(finishPreloader, PRELOADER_DURATION_MS);
-} else {
-  finishPreloader();
-}
+runPreloaderSequence();
