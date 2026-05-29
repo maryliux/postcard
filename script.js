@@ -42,7 +42,7 @@ const INERTIA_MULTIPLIER = 120;
 const STOP_EPSILON = 0.03;
 const MAX_ANNOTATION_CHARS = 50;
 const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 380 : 3250;
+const PRELOADER_DURATION_MS = PREFERS_REDUCED_MOTION ? 260 : 1150;
 const FORTUNE_STYLE_ANNOTATIONS = [
   "your luck changes after the next full moon.",
   "someone from your past will text this week.",
@@ -414,17 +414,6 @@ function runPreloaderSequence() {
     return;
   }
 
-  if (PREFERS_REDUCED_MOTION) {
-    window.setTimeout(finishPreloader, PRELOADER_DURATION_MS);
-    return;
-  }
-
-  const sequenceCard = preloader.querySelector(".preloader__card");
-  if (sequenceCard) {
-    sequenceCard.addEventListener("animationend", finishPreloader, { once: true });
-  }
-
-  // Safety timeout in case animation event does not fire.
   window.setTimeout(finishPreloader, PRELOADER_DURATION_MS);
 }
 
