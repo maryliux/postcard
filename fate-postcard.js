@@ -70,6 +70,8 @@ let animationFrameId = null;
 let stickerPlacements = [];
 let stickerIdCounter = 0;
 let stickerDragState = null;
+let hasUnsavedStickerChanges = false;
+let lastSavedStickerPlacements = [];
 
 function loadImageAsync(src) {
   return new Promise((resolve, reject) => {
@@ -116,9 +118,17 @@ function randomInRange(min, max) {
   return min + Math.random() * (max - min);
 }
 
-function setActionsVisible(isVisible) {
+function cloneStickerPlacements(placements) {
+  return placements.map((placement) => ({ ...placement }));
+}
+
+function setActionsVisible(isVisible = null) {
+  const resolvedVisibility =
+    isVisible === null
+      ? document.body.classList.contains("is-decorate-open") && stickerPlacements.length > 0
+      : isVisible;
   actionBars.forEach((bar) => {
-    bar.hidden = !isVisible;
+    bar.hidden = !resolvedVisibility;
   });
 }
 
@@ -440,11 +450,30 @@ function setDecorateSheetsOpen(isOpen) {
     decorateToggleButton.classList.toggle("is-active", isOpen);
     decorateToggleButton.setAttribute("aria-pressed", String(isOpen));
   }
+  setActionsVisible();
 }
 
 function onDecorateToggleClick() {
-  const nextOpenState = !document.body.classList.contains("is-decorate-open");
-  setDecorateSheetsOpen(nextOpenState);
+  const isOpen = document.body.classList.contains("is-decorate-open");
+  if (!isOpen) {
+    setDecorateSheetsOpen(true);
+    return;
+  }
+
+  if (hasUnsavedStickerChanges && stickerPlacements.length > 0) {
+    const shouldDiscard = window.confirm(
+      "You have unsaved sticker changes. Exit decorating mode without saving?"
+    );
+    if (!shouldDiscard) {
+      return;
+    }
+
+    stickerPlacements = cloneStickerPlacements(lastSavedStickerPlacements);
+    hasUnsavedStickerChanges = false;
+    renderPlacedStickers();
+  }
+
+  setDecorateSheetsOpen(false);
 }
 
 function updateDragGhostPosition(clientX, clientY) {
@@ -523,7 +552,8 @@ function tryPlaceStickerAtPoint(stickerPayload, clientX, clientY) {
     scale: randomInRange(0.94, 1.18),
   });
   renderPlacedStickers();
-  setActionsVisible(stickerPlacements.length > 0);
+  hasUnsavedStickerChanges = true;
+  setActionsVisible();
   return true;
 }
 
@@ -546,6 +576,8 @@ function movePlacedStickerAtPoint(placementId, clientX, clientY) {
   targetPlacement.x = clamp((clientX - rect.left) / rect.width, 0.02, 0.98);
   targetPlacement.y = clamp((clientY - rect.top) / rect.height, 0.02, 0.98);
   renderPlacedStickers();
+  hasUnsavedStickerChanges = true;
+  setActionsVisible();
   return true;
 }
 
@@ -648,11 +680,16 @@ function onUndoStickersClick() {
 
   stickerPlacements = stickerPlacements.slice(0, -1);
   renderPlacedStickers();
-  setActionsVisible(stickerPlacements.length > 0);
+  hasUnsavedStickerChanges = true;
+  setActionsVisible();
 }
 
 function onSaveLayoutClick(event) {
   const didSave = saveStickerLayoutToSession();
+  if (didSave) {
+    lastSavedStickerPlacements = cloneStickerPlacements(stickerPlacements);
+    hasUnsavedStickerChanges = false;
+  }
   const button = event.currentTarget;
   if (!button || !(button instanceof HTMLButtonElement)) {
     return;
@@ -793,10 +830,12 @@ if (creatorPostcardInner) {
 applyFrontImage();
 setRandomFortunes();
 stickerPlacements = getStoredStickerLayout();
+lastSavedStickerPlacements = cloneStickerPlacements(stickerPlacements);
+hasUnsavedStickerChanges = false;
 const maxPlacementId = stickerPlacements.reduce((maxId, placement) => Math.max(maxId, placement.id), -1);
 stickerIdCounter = maxPlacementId + 1;
 renderPlacedStickers();
-setActionsVisible(stickerPlacements.length > 0);
+setActionsVisible();
 commitFaceState(false);
 setMode("3d");
 setDecorateSheetsOpen(false);
