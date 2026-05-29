@@ -689,6 +689,7 @@ function onSaveLayoutClick(event) {
   if (didSave) {
     lastSavedStickerPlacements = cloneStickerPlacements(stickerPlacements);
     hasUnsavedStickerChanges = false;
+    setDecorateSheetsOpen(false);
   }
   const button = event.currentTarget;
   if (!button || !(button instanceof HTMLButtonElement)) {
