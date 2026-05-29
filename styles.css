@@ -2,6 +2,12 @@
   color-scheme: light;
 }
 
+@font-face {
+  font-family: "Des Montilles";
+  src: local("Des Montilles"), local("Des Montilles Regular");
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -290,7 +296,7 @@ body.is-ready .scene {
 }
 
 .doodle__text {
-  font-family: "Permanent Marker", "Marker Felt", "Bradley Hand", cursive;
+  font-family: "Des Montilles", "Permanent Marker", "Marker Felt", "Bradley Hand", cursive;
   font-size: clamp(0.76rem, 1.45vw, 1.22rem);
   line-height: 1.02;
   white-space: normal;

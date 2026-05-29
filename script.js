@@ -74,20 +74,20 @@ const FORTUNE_STYLE_ANNOTATIONS = [
 ];
 const DOODLE_ZONES = [
   {
-    horizontalProp: "left",
-    horizontalRange: [36, 50],
+    horizontalProp: "right",
+    horizontalRange: [-22, -12],
     verticalProp: "top",
-    verticalRange: [10, 22],
-    rotationRange: [-12, -4],
-    widthRange: [10.4, 13.6],
+    verticalRange: [-14, -6],
+    rotationRange: [-10, -2],
+    widthRange: [10.8, 13.6],
   },
   {
     horizontalProp: "left",
-    horizontalRange: [8, 20],
+    horizontalRange: [-22, -11],
     verticalProp: "top",
-    verticalRange: [52, 66],
-    rotationRange: [-6, 6],
-    widthRange: [11, 14.2],
+    verticalRange: [55, 69],
+    rotationRange: [-4, 7],
+    widthRange: [11.4, 14.4],
   },
 ];
 
