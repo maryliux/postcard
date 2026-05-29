@@ -111,63 +111,41 @@ body {
 
 .doodle {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 0.24rem;
-}
-
-.doodle__arrow {
-  width: clamp(1.1rem, 2.9vw, 1.9rem);
-  height: clamp(0.45rem, 1.2vw, 0.86rem);
-  object-fit: contain;
-  object-position: center;
-  flex: 0 0 auto;
+  max-width: clamp(4.8rem, 13vw, 8rem);
 }
 
 .doodle__text {
   font-family: "Beth Ellen", "Brush Script MT", "Segoe Script", cursive;
-  font-size: clamp(0.54rem, 1.02vw, 0.74rem);
-  line-height: 1;
-  white-space: nowrap;
+  font-size: clamp(0.5rem, 0.95vw, 0.68rem);
+  line-height: 1.1;
+  white-space: normal;
   letter-spacing: 0.01em;
   color: #b22a35;
+  display: inline-block;
+  text-align: left;
 }
 
 .doodle--3 {
-  top: -4%;
-  right: -33%;
-  transform: rotate(-2deg);
-}
-
-.doodle--3 .doodle__arrow {
-  transform: scaleX(-1) rotate(9deg);
+  top: -14%;
+  right: -35%;
+  transform: rotate(-8deg);
 }
 
 .doodle--1 {
-  top: 14%;
-  right: -31%;
-  transform: rotate(-6deg);
-}
-
-.doodle--1 .doodle__arrow {
-  transform: scaleX(-1) rotate(-6deg);
+  top: 18%;
+  right: -34%;
+  transform: rotate(-3deg);
 }
 
 .doodle--2 {
-  left: -41%;
-  bottom: 23%;
-  flex-direction: row-reverse;
-  transform: rotate(7deg);
-}
-
-.doodle--2 .doodle__arrow {
-  transform: rotate(5deg);
+  left: -44%;
+  bottom: 8%;
+  transform: rotate(9deg);
 }
 
 .doodle--2 .doodle__text {
-  max-width: 9rem;
-  white-space: normal;
-  line-height: 1.02;
+  max-width: 7.4rem;
+  line-height: 1.08;
   text-align: left;
 }
 
@@ -256,21 +234,21 @@ body {
   }
 
   .doodle__text {
-    font-size: 0.46rem;
+    font-size: 0.44rem;
   }
 
   .doodle--1 {
-    right: -26%;
-    top: 15%;
+    right: -28%;
+    top: 17%;
   }
 
   .doodle--2 {
-    left: -33%;
-    bottom: 24%;
+    left: -36%;
+    bottom: 10%;
   }
 
   .doodle--3 {
-    right: -29%;
-    top: -3%;
+    right: -30%;
+    top: -11%;
   }
 }
