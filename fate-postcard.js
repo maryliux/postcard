@@ -133,11 +133,8 @@ function setActionsVisible(isVisible = null) {
 }
 
 function renderPlacedStickers() {
-  const overlays = [
-    { node: creatorStickerOverlay3d, compensatePerspective: true },
-    { node: creatorStickerOverlay2d, compensatePerspective: false },
-  ];
-  overlays.forEach(({ node: overlay, compensatePerspective }) => {
+  const overlays = [creatorStickerOverlay3d, creatorStickerOverlay2d];
+  overlays.forEach((overlay) => {
     if (!overlay) {
       return;
     }
@@ -158,13 +155,9 @@ function renderPlacedStickers() {
       } else {
         node.textContent = placement.symbol;
       }
-      const sideScaleCompensation = compensatePerspective
-        ? clamp(0.58 - placement.x * 0.28, 0.18, 0.58)
-        : 1;
-      const finalScale = placement.scale * sideScaleCompensation;
       node.style.left = `${(placement.x * 100).toFixed(2)}%`;
       node.style.top = `${(placement.y * 100).toFixed(2)}%`;
-      node.style.transform = `translate(-50%, -50%) rotate(${placement.rotation.toFixed(1)}deg) scale(${finalScale.toFixed(2)})`;
+      node.style.transform = `translate(-50%, -50%) rotate(${placement.rotation.toFixed(1)}deg) scale(${placement.scale.toFixed(2)})`;
       node.addEventListener("pointerdown", onPlacedStickerPointerDown);
       overlay.appendChild(node);
     });
