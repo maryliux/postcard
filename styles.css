@@ -20,6 +20,7 @@ body {
   inset: 0;
   display: grid;
   place-items: center;
+  overflow: hidden;
   background: #f4f3ed;
   z-index: 20;
   transition: opacity 420ms ease, visibility 420ms ease;
@@ -30,28 +31,64 @@ body {
   visibility: hidden;
 }
 
+.preloader::after {
+  content: "";
+  position: absolute;
+  width: clamp(3.8rem, 12vw, 6.4rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 37, 37, 0.2);
+  box-shadow: 0 0 0 0 rgba(23, 23, 23, 0.15);
+  opacity: 0;
+  transform: scale(0.34);
+  animation: stamp-aura 1100ms cubic-bezier(0.16, 0.84, 0.24, 1) forwards;
+  pointer-events: none;
+}
+
 .preloader__stamp {
-  width: clamp(5.6rem, 17vw, 9.5rem);
+  width: clamp(0.56rem, 1.7vw, 0.95rem);
   height: auto;
   display: block;
   opacity: 0;
-  transform: scale(0.86) translateY(10px);
-  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2));
-  animation: stamp-preload 900ms cubic-bezier(0.2, 0.7, 0.18, 1) forwards;
+  transform: translateY(12px) scale(0.32) rotate(-26deg);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
+  animation: stamp-preload-special 1080ms cubic-bezier(0.19, 0.88, 0.21, 1) forwards;
 }
 
-@keyframes stamp-preload {
+@keyframes stamp-preload-special {
   0% {
     opacity: 0;
-    transform: scale(0.86) translateY(10px);
+    transform: translateY(12px) scale(0.32) rotate(-26deg);
   }
-  58% {
+  42% {
     opacity: 1;
-    transform: scale(1.04) translateY(-1px);
+    transform: translateY(-1px) scale(1.4) rotate(12deg);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(0) scale(0.92) rotate(-8deg);
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes stamp-aura {
+  0% {
+    opacity: 0;
+    transform: scale(0.34);
+    box-shadow: 0 0 0 0 rgba(23, 23, 23, 0.16);
+  }
+  45% {
+    opacity: 0.34;
+    transform: scale(0.95);
+    box-shadow: 0 0 0 9px rgba(23, 23, 23, 0.08);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+    box-shadow: 0 0 0 18px rgba(23, 23, 23, 0);
   }
 }
 
@@ -84,6 +121,11 @@ body.is-ready .scene {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .preloader::after {
+    animation: none;
+    opacity: 0;
   }
 
   .scene {
