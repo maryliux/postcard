@@ -104,6 +104,10 @@ body {
   margin-top: clamp(2.6rem, 7vw, 4.2rem);
 }
 
+.creator__view[hidden] {
+  display: none !important;
+}
+
 .creator__postcard-wrap {
   width: min(84vw, 30rem);
   perspective: 2600px;
