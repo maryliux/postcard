@@ -131,11 +131,14 @@ function renderPlacedStickers() {
     stickerPlacements.forEach((placement) => {
       const node = document.createElement("span");
       node.className = "creator__placed-sticker";
+      node.dataset.placementId = String(placement.id);
       if (placement.type === "image" && placement.imageSrc) {
         const imageNode = document.createElement("img");
         imageNode.className = "creator__placed-sticker-image";
         imageNode.src = placement.imageSrc;
         imageNode.alt = "";
+        imageNode.draggable = false;
+        imageNode.style.pointerEvents = "none";
         node.appendChild(imageNode);
       } else {
         node.textContent = placement.symbol;
@@ -143,6 +146,7 @@ function renderPlacedStickers() {
       node.style.left = `${(placement.x * 100).toFixed(2)}%`;
       node.style.top = `${(placement.y * 100).toFixed(2)}%`;
       node.style.transform = `translate(-50%, -50%) rotate(${placement.rotation.toFixed(1)}deg) scale(${placement.scale.toFixed(2)})`;
+      node.addEventListener("pointerdown", onPlacedStickerPointerDown);
       overlay.appendChild(node);
     });
   });
@@ -228,6 +232,10 @@ function commitFaceState(showBack) {
 
 function onPointerDown(event) {
   if (!creatorPostcard || creatorView3d?.hidden || stickerDragState) {
+    return;
+  }
+
+  if (event.target instanceof Element && event.target.closest(".creator__placed-sticker")) {
     return;
   }
 
@@ -401,6 +409,13 @@ function updateDragGhostPosition(clientX, clientY) {
   stickerDragState.ghost.style.top = `${clientY}px`;
 }
 
+function setPlacementDraggingState(placementId, isDragging) {
+  const nodes = document.querySelectorAll(`.creator__placed-sticker[data-placement-id="${placementId}"]`);
+  nodes.forEach((node) => {
+    node.classList.toggle("is-dragging-placement", isDragging);
+  });
+}
+
 function createDragGhost(stickerPayload) {
   const ghost = document.createElement("span");
   ghost.className = "creator__drag-ghost";
@@ -421,6 +436,10 @@ function createDragGhost(stickerPayload) {
 function stopStickerDrag() {
   if (!stickerDragState) {
     return;
+  }
+
+  if (Number.isFinite(stickerDragState.fromPlacementId)) {
+    setPlacementDraggingState(stickerDragState.fromPlacementId, false);
   }
 
   if (stickerDragState.ghost) {
@@ -461,6 +480,28 @@ function tryPlaceStickerAtPoint(stickerPayload, clientX, clientY) {
   return true;
 }
 
+function movePlacedStickerAtPoint(placementId, clientX, clientY) {
+  const dropTarget = getActiveFrontDropTarget();
+  if (!dropTarget) {
+    return false;
+  }
+
+  const rect = dropTarget.getBoundingClientRect();
+  if (!isPointInRect(clientX, clientY, rect)) {
+    return false;
+  }
+
+  const targetPlacement = stickerPlacements.find((placement) => placement.id === placementId);
+  if (!targetPlacement) {
+    return false;
+  }
+
+  targetPlacement.x = clamp((clientX - rect.left) / rect.width, 0.02, 0.98);
+  targetPlacement.y = clamp((clientY - rect.top) / rect.height, 0.02, 0.98);
+  renderPlacedStickers();
+  return true;
+}
+
 function onGlobalStickerPointerMove(event) {
   if (!stickerDragState) {
     return;
@@ -473,8 +514,51 @@ function onGlobalStickerPointerUp(event) {
     return;
   }
 
-  tryPlaceStickerAtPoint(stickerDragState, event.clientX, event.clientY);
+  if (Number.isFinite(stickerDragState.fromPlacementId)) {
+    movePlacedStickerAtPoint(stickerDragState.fromPlacementId, event.clientX, event.clientY);
+  } else {
+    tryPlaceStickerAtPoint(stickerDragState, event.clientX, event.clientY);
+  }
   stopStickerDrag();
+}
+
+function onPlacedStickerPointerDown(event) {
+  if (!document.body.classList.contains("is-decorate-open")) {
+    return;
+  }
+
+  const stickerNode = event.currentTarget;
+  const placementId = Number(stickerNode.dataset.placementId);
+  if (!Number.isFinite(placementId)) {
+    return;
+  }
+
+  const placement = stickerPlacements.find((entry) => entry.id === placementId);
+  if (!placement) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  stopStickerDrag();
+
+  const ghost = createDragGhost(placement);
+  document.body.appendChild(ghost);
+  setPlacementDraggingState(placementId, true);
+
+  stickerDragState = {
+    type: placement.type,
+    symbol: placement.symbol,
+    imageSrc: placement.imageSrc || null,
+    pointerId: event.pointerId,
+    ghost,
+    fromPlacementId: placementId,
+  };
+  updateDragGhostPosition(event.clientX, event.clientY);
+
+  window.addEventListener("pointermove", onGlobalStickerPointerMove);
+  window.addEventListener("pointerup", onGlobalStickerPointerUp);
+  window.addEventListener("pointercancel", onGlobalStickerPointerUp);
 }
 
 function onSheetStickerPointerDown(event) {
