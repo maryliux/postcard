@@ -108,7 +108,11 @@ body {
   width: 100%;
   display: grid;
   place-items: center;
-  margin-top: clamp(4.2rem, 13vw, 8.2rem);
+  margin-top: clamp(8.2rem, 20vw, 13.8rem);
+}
+
+.creator__view--3d {
+  margin-top: clamp(10.2rem, 24vw, 16.6rem);
 }
 
 .creator__view[hidden] {
@@ -574,5 +578,45 @@ body.is-decorate-open .creator__sticker-sheet--right {
   .creator__flat-card--front .creator__fortune-line--3 {
     right: -14%;
     top: 64%;
+  }
+}
+
+@media (min-width: 1600px) {
+  .creator {
+    padding: 2.2rem 2.8rem 2rem;
+  }
+
+  .creator__top-bar {
+    top: 1.35rem;
+    left: 1.35rem;
+    right: 1.35rem;
+  }
+
+  .creator__view {
+    margin-top: clamp(10rem, 17vh, 14.8rem);
+  }
+
+  .creator__view--3d {
+    margin-top: clamp(12rem, 20vh, 18rem);
+  }
+
+  .creator__postcard-wrap,
+  .creator__view--2d {
+    width: min(58vw, 46rem);
+  }
+
+  .creator__fortune-line {
+    max-width: 14.4rem;
+    font-size: 1.05rem;
+  }
+
+  .creator__sticker-sheet {
+    width: 11.2rem;
+    padding: 0.96rem 0.82rem 1.02rem;
+  }
+
+  .creator__sticker {
+    height: 2.25rem;
+    font-size: 1.24rem;
   }
 }
