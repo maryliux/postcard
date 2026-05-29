@@ -388,6 +388,14 @@ body.is-decorate-open .creator__sticker-sheet--right {
   box-shadow: 0 2px 5px rgba(120, 15, 44, 0.28);
 }
 
+.creator__save-fixed {
+  position: fixed;
+  left: clamp(0.8rem, 2.2vw, 1.4rem);
+  bottom: clamp(0.8rem, 2.2vw, 1.4rem);
+  z-index: 14;
+  text-transform: lowercase;
+}
+
 .creator__fortune-line {
   position: absolute;
   margin: 0;
@@ -526,6 +534,11 @@ body.is-decorate-open .creator__sticker-sheet--right {
   .creator__action-button {
     font-size: 0.58rem;
     padding: 0.5rem 0.8rem;
+  }
+
+  .creator__save-fixed {
+    left: 0.85rem;
+    bottom: 0.85rem;
   }
 
   .creator__postcard-wrap,

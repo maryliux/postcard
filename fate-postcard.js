@@ -612,27 +612,37 @@ function onUndoStickersClick() {
 }
 
 async function onSaveStickersClick() {
-  if (stickerPlacements.length === 0) {
-    return;
-  }
-
-  const sourceImageSrc = creatorFrontImage3d?.src || creatorFrontImage2d?.src;
-  if (!sourceImageSrc) {
+  const frontImageSrc = creatorFrontImage3d?.src || creatorFrontImage2d?.src;
+  const backImageSrc = "backcard.png";
+  if (!frontImageSrc) {
     return;
   }
 
   try {
-    const image = await loadImageAsync(sourceImageSrc);
+    const frontImage = await loadImageAsync(frontImageSrc);
+    const backImage = await loadImageAsync(backImageSrc);
+
+    const frontWidth = frontImage.naturalWidth || 1200;
+    const frontHeight = frontImage.naturalHeight || 800;
+    const backWidth = backImage.naturalWidth || frontWidth;
+    const backHeight = backImage.naturalHeight || Math.round((frontHeight / frontWidth) * backWidth);
+    const scaledBackHeight = Math.max(1, Math.round((frontWidth / backWidth) * backHeight));
+    const gap = Math.max(24, Math.round(frontWidth * 0.03));
+
     const canvas = document.createElement("canvas");
-    canvas.width = image.naturalWidth || 1200;
-    canvas.height = image.naturalHeight || 800;
+    canvas.width = frontWidth;
+    canvas.height = frontHeight + gap + scaledBackHeight;
     const context = canvas.getContext("2d");
     if (!context) {
       return;
     }
 
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    const stickerFontSizePx = Math.max(22, Math.round(canvas.width * 0.048));
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(frontImage, 0, 0, frontWidth, frontHeight);
+    context.drawImage(backImage, 0, frontHeight + gap, frontWidth, scaledBackHeight);
+
+    const stickerFontSizePx = Math.max(22, Math.round(frontWidth * 0.048));
     context.font = `${stickerFontSizePx}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
     context.textAlign = "center";
     context.textBaseline = "middle";
@@ -655,12 +665,12 @@ async function onSaveStickersClick() {
 
     stickerPlacements.forEach((placement) => {
       context.save();
-      context.translate(placement.x * canvas.width, placement.y * canvas.height);
+      context.translate(placement.x * frontWidth, placement.y * frontHeight);
       context.rotate((placement.rotation * Math.PI) / 180);
       context.scale(placement.scale, placement.scale);
       if (placement.type === "image" && placement.imageSrc && loadedStickerImages.has(placement.imageSrc)) {
         const stickerImage = loadedStickerImages.get(placement.imageSrc);
-        const baseSize = Math.max(26, Math.round(canvas.width * 0.04));
+        const baseSize = Math.max(26, Math.round(frontWidth * 0.04));
         context.drawImage(stickerImage, -baseSize / 2, -baseSize / 2, baseSize, baseSize);
       } else {
         context.fillText(placement.symbol, 0, 0);
@@ -670,7 +680,7 @@ async function onSaveStickersClick() {
 
     const downloadLink = document.createElement("a");
     downloadLink.href = canvas.toDataURL("image/png");
-    downloadLink.download = "decorated-postcard.png";
+    downloadLink.download = "postcard-front-back.png";
     downloadLink.click();
   } catch (error) {
     window.alert("Could not save this postcard image. Please try again.");
