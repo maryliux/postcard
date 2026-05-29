@@ -112,7 +112,7 @@ body {
 }
 
 .creator__view--3d {
-  margin-top: clamp(10.2rem, 24vw, 16.6rem);
+  margin-top: clamp(12.8rem, 28vw, 19.5rem) !important;
 }
 
 .creator__view[hidden] {
@@ -597,7 +597,7 @@ body.is-decorate-open .creator__sticker-sheet--right {
   }
 
   .creator__view--3d {
-    margin-top: clamp(12rem, 20vh, 18rem);
+    margin-top: clamp(14rem, 23vh, 20rem) !important;
   }
 
   .creator__postcard-wrap,
